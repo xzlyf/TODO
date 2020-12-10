@@ -35,6 +35,7 @@ import androidx.core.graphics.ColorUtils;
 
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
+import com.xz.todolist.base.utils.ToastUtil;
 import com.xz.todolist.content.Local;
 import com.xz.todolist.utils.ColorUtil;
 import com.xz.utils.appUtils.TransparentBarUtil;
@@ -183,10 +184,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
 	@Override
 	public void sToast(String text) {
+		ToastUtil.Shows(mContext, text);
 	}
 
 	@Override
 	public void lToast(String text) {
+		ToastUtil.Shows_LONG(mContext, text);
 	}
 
 	@Override
