@@ -26,6 +26,7 @@ import com.xz.todolist.utils.CustomUrlSpan;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
 
@@ -47,6 +48,8 @@ public class LoginActivity extends BaseActivity {
 	private FragmentManager manager;
 	private LoginFragment loginFragment;
 	private RegisterFragment registerFragment;
+	//当前页面  1-登录 2-手机号登录 3-注册 4-忘记密码
+	private int type = 1;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -102,12 +105,27 @@ public class LoginActivity extends BaseActivity {
 	private void getProtocol() {
 		//tvProtocol.setText(Html.fromHtml("《<a href=\"https://www.baidu.com\">用户注册协议</a>》"));
 		tvProtocol.setText(Html.fromHtml("《<font color=\"" + ColorUtil.int2Hex(getColor(R.color.colorAccent)) + "\">用户注册协议</font>》"));
-		tvProtocol.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+	}
+
+	@OnClick({R.id.tv_forget, R.id.tv_type, R.id.tv_protocol})
+	public void onViewClick(View view) {
+		switch (view.getId()) {
+			case R.id.tv_protocol:
 				sToast("用户协议...");
-			}
-		});
+				break;
+			case R.id.tv_forget:
+				break;
+			case R.id.tv_type:
+				if (type == 1) {
+					showFragment(registerFragment);
+					type = 2;
+				} else if (type == 2) {
+					showFragment(loginFragment);
+					type = 1;
+				}
+
+				break;
+		}
 	}
 
 
