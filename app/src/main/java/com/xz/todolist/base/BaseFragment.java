@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 
 import com.xz.todolist.base.utils.ToastUtil;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 public abstract class BaseFragment extends Fragment {
     protected final String TAG = this.getClass().getSimpleName();
@@ -19,6 +22,7 @@ public abstract class BaseFragment extends Fragment {
     //是否正在前台显示
     private boolean isShowing;
 
+    private Unbinder unbinder;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -30,6 +34,8 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(getLayout(), container, false);
+        //返回一个unbinder对象，
+        unbinder = ButterKnife.bind(this, rootView);
         initView(rootView);
         initDate(mContext);
         return rootView;
@@ -39,6 +45,15 @@ public abstract class BaseFragment extends Fragment {
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
         isShowing = menuVisible;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //进行判空，避免空指针
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     /**

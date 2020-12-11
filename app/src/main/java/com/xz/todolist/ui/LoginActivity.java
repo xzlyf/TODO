@@ -3,15 +3,10 @@ package com.xz.todolist.ui;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,7 +17,6 @@ import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.ui.fragment.LoginFragment;
 import com.xz.todolist.ui.fragment.RegisterFragment;
 import com.xz.todolist.utils.ColorUtil;
-import com.xz.todolist.utils.CustomUrlSpan;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,16 +24,14 @@ import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
 
-	@BindView(R.id.tv_title)
-	TextView tvTitle;
+	@BindView(R.id.tv_login)
+	TextView tvLogin;
+	@BindView(R.id.tv_register)
+	TextView tvRegister;
 	@BindView(R.id.btn_submit)
 	TextView btnSubmit;
 	@BindView(R.id.main_fragment)
 	FrameLayout mainFragment;
-	@BindView(R.id.tv_type)
-	TextView tvType;
-	@BindView(R.id.tv_forget)
-	TextView tvForget;
 	@BindView(R.id.box_protocol)
 	CheckBox boxProtocol;
 	@BindView(R.id.tv_protocol)
@@ -48,8 +40,7 @@ public class LoginActivity extends BaseActivity {
 	private FragmentManager manager;
 	private LoginFragment loginFragment;
 	private RegisterFragment registerFragment;
-	//当前页面  1-登录 2-手机号登录 3-注册 4-忘记密码
-	private int type = 1;
+
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -100,33 +91,37 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	/**
-	 * 用户注册协议
+	 * 注册与使用协议
 	 */
 	private void getProtocol() {
 		//tvProtocol.setText(Html.fromHtml("《<a href=\"https://www.baidu.com\">用户注册协议</a>》"));
-		tvProtocol.setText(Html.fromHtml("《<font color=\"" + ColorUtil.int2Hex(getColor(R.color.colorAccent)) + "\">用户注册协议</font>》"));
+		tvProtocol.setText(Html.fromHtml("《<font color=\"" + ColorUtil.int2Hex(getColor(R.color.colorAccent)) + "\">注册与使用协议</font>》"));
 	}
 
-	@OnClick({R.id.tv_forget, R.id.tv_type, R.id.tv_protocol})
+	@OnClick({R.id.tv_protocol, R.id.tv_login, R.id.tv_register})
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_protocol:
 				sToast("用户协议...");
 				break;
-			case R.id.tv_forget:
+			case R.id.tv_login:
+				showFragment(loginFragment);
+				tvLogin.setBackground(getDrawable(R.drawable.share_text_bottom_line));
+				tvRegister.setBackground(getDrawable(R.drawable.share_text_bottom_line_hide));
 				break;
-			case R.id.tv_type:
-				if (type == 1) {
-					showFragment(registerFragment);
-					type = 2;
-				} else if (type == 2) {
-					showFragment(loginFragment);
-					type = 1;
-				}
-
+			case R.id.tv_register:
+				showFragment(registerFragment);
+				tvRegister.setBackground(getDrawable(R.drawable.share_text_bottom_line));
+				tvLogin.setBackground(getDrawable(R.drawable.share_text_bottom_line_hide));
 				break;
 		}
 	}
 
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// TODO: add setContentView(...) invocation
+		ButterKnife.bind(this);
+	}
 }
