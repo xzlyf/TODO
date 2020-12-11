@@ -17,10 +17,10 @@ public class Local {
             Manifest.permission.READ_EXTERNAL_STORAGE,
     };
 
-    private static String SERVER = "https://192.168.1.66:8080/";
-    private static String alt_user = "user/";
-    private static String alt_todolist = "todolist/";
-    private static String alt_appinfo = "appinfo/";
+    public static String SERVER = "https://192.168.1.66:8080/";
+    public static String alt_user = "user/";
+    public static String alt_todolist = "todolist/";
+    public static String alt_appinfo = "appinfo/";
 
     public static String appId = "4MakRN8juW8c6Hii4lTl0rt84JDH22c9";
     public static String appSecret = "OoLZs7vHPEPsr9YtZtnLY7My2W2RiwTk";
