@@ -17,10 +17,14 @@ public class Local {
             Manifest.permission.READ_EXTERNAL_STORAGE,
     };
 
-    public static String SERVER = "https://192.168.1.66:8080/";
-    public static String alt_user = "user/";
-    public static String alt_todolist = "todolist/";
-    public static String alt_appinfo = "appinfo/";
+    //public static String SERVER = "https://192.168.1.66:8080/";
+    public static String SERVER = "http://106.55.150.181:28080/";//腾讯云
+    public static String alt_user = "/user";
+    public static String alt_todolist = "/todolist";
+    public static String alt_appinfo = "/appinfo";
+
+    //接口
+    public static final String GET_REGISTER = "/registerUser";
 
     public static String appId = "4MakRN8juW8c6Hii4lTl0rt84JDH22c9";
     public static String appSecret = "OoLZs7vHPEPsr9YtZtnLY7My2W2RiwTk";

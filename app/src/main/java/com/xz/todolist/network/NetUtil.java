@@ -1,15 +1,25 @@
 package com.xz.todolist.network;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
-import com.xz.utils.netUtils.OkHttpClientManager;
+import com.google.gson.internal.$Gson$Types;
+import com.orhanobut.logger.Logger;
+import com.xz.todolist.content.Local;
+import com.xz.utils.encodUtils.MD5Util;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -17,7 +27,11 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @author czr
@@ -25,9 +39,10 @@ import okhttp3.OkHttpClient;
  * @date 2020/12/12
  */
 public class NetUtil {
-	public static final String TAG = NetUtil.class.getName();
+	private static final String TAG = NetUtil.class.getName();
 	private static NetUtil mInstance;
-	public OkHttpClient mOkHttpClient;
+	private OkHttpClient mOkHttpClient;
+	private Handler mDelivery;
 
 	private NetUtil() {
 		OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
@@ -44,6 +59,7 @@ public class NetUtil {
 			Log.e(TAG, "OkHttpClientManager: https Configuration failed ");
 		}
 		mOkHttpClient = okHttpBuilder.build();
+		mDelivery = new Handler(Looper.getMainLooper());
 	}
 
 	public static NetUtil getInstance() {
@@ -117,4 +133,105 @@ public class NetUtil {
 			return this.standardTrustManager.getAcceptedIssuers();
 		}
 	}
+
+
+	/**
+	 * 为HttpGet 的 url 方便的添加多个name value 参数。
+	 *
+	 * @param url
+	 * @param params
+	 * @param isHavFirst 是否需要问号
+	 * @return
+	 */
+	public static String attachHttpGetParams(String url, Map<String, Object> params, boolean isHavFirst) {
+		Iterator<String> keys = params.keySet().iterator();
+		Iterator<Object> values = params.values().iterator();
+		StringBuffer stringBuffer = new StringBuffer();
+		if (isHavFirst) {
+			stringBuffer.append("?");
+		} else {
+			stringBuffer.append("&");
+		}
+
+
+		for (int i = 0; i < params.size(); i++) {
+			String value = null;
+			try {
+				value = URLEncoder.encode(values.next().toString(), "utf-8");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			stringBuffer.append(keys.next() + "=" + value);
+			if (i != params.size() - 1) {
+				stringBuffer.append("&");
+			}
+		}
+		//Logger.e("HttpGetParams = " + url + stringBuffer);//请求连接
+		return url + stringBuffer.toString();
+	}
+
+
+	/**
+	 * 处理请求和返回
+	 *
+	 * @param request
+	 */
+	private void deliveryRequest(Request request, ResultCallback callback) {
+		Call call = mOkHttpClient.newCall(request);
+		call.enqueue(new Callback() {
+			@Override
+			public void onFailure(Call call, IOException e) {
+				e.printStackTrace();
+				Logger.e(e.getMessage());
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				Logger.w(response.body().string());
+			}
+		});
+	}
+
+	public void get(String url, Map<String, Object> params, ResultCallback callback) {
+		long timestamp = System.currentTimeMillis();
+		Request request = new Request.Builder()
+				.addHeader("appid", Local.appId)
+				.addHeader("timestamp", String.valueOf(timestamp))
+				.addHeader("version", Local.version)
+				.addHeader("sign", MD5Util.getMD5(Local.appId + Local.appSecret + timestamp + Local.version))
+				.url(attachHttpGetParams(url, params, true))
+				.build();
+
+		//mOkHttpClient.newCall(request).enqueue(call);
+		deliveryRequest(request, callback);
+	}
+
+
+	/**
+	 * 结果回调接口
+	 *
+	 * @param <T>
+	 */
+	public static abstract class ResultCallback<T> {
+		Type mType;
+
+		public ResultCallback() {
+			mType = getSuperclassTypeParameter(getClass());
+		}
+
+		static Type getSuperclassTypeParameter(Class<?> subclass) {
+			Type superclass = subclass.getGenericSuperclass();
+			if (superclass instanceof Class) {
+				throw new RuntimeException("Missing type parameter.");
+			}
+			ParameterizedType parameterized = (ParameterizedType) superclass;
+			return $Gson$Types.canonicalize(parameterized.getActualTypeArguments()[0]);
+		}
+
+		public abstract void onError(Request request, Exception e);
+
+		public abstract void onResponse(T response);
+	}
+
 }

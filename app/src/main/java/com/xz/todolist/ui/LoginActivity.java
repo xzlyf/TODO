@@ -1,7 +1,6 @@
 package com.xz.todolist.ui;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.CheckBox;
@@ -12,14 +11,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
+import com.xz.todolist.api.UserApi;
 import com.xz.todolist.base.BaseActivity;
+import com.xz.todolist.content.Local;
 import com.xz.todolist.ui.fragment.LoginFragment;
 import com.xz.todolist.ui.fragment.RegisterFragment;
 import com.xz.todolist.utils.ColorUtil;
+import com.xz.todolist.utils.RSAUtil;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
@@ -41,6 +46,7 @@ public class LoginActivity extends BaseActivity {
 	private LoginFragment loginFragment;
 	private RegisterFragment registerFragment;
 
+	private UserApi userApi;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -60,9 +66,11 @@ public class LoginActivity extends BaseActivity {
 		setActionBarBackColor(getColor(R.color.colorPrimary));
 		changeStatusBarTextColor();
 
+		userApi = UserApi.getInstance();
 		getProtocol();
 		initFragment();
 		showFragment(loginFragment);
+
 
 	}
 
@@ -98,7 +106,7 @@ public class LoginActivity extends BaseActivity {
 		tvProtocol.setText(Html.fromHtml("《<font color=\"" + ColorUtil.int2Hex(getColor(R.color.colorAccent)) + "\">注册与使用协议</font>》"));
 	}
 
-	@OnClick({R.id.tv_protocol, R.id.tv_login, R.id.tv_register})
+	@OnClick({R.id.tv_protocol, R.id.tv_login, R.id.tv_register, R.id.btn_submit})
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_protocol:
@@ -114,14 +122,11 @@ public class LoginActivity extends BaseActivity {
 				tvRegister.setBackground(getDrawable(R.drawable.share_text_bottom_line));
 				tvLogin.setBackground(getDrawable(R.drawable.share_text_bottom_line_hide));
 				break;
+			case R.id.btn_submit:
+				userApi.register();
+				break;
 		}
 	}
 
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// TODO: add setContentView(...) invocation
-		ButterKnife.bind(this);
-	}
 }

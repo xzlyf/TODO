@@ -29,8 +29,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0-alpha1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -38,7 +37,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-
     //xzlyf maven仓库
     implementation 'com.github.xzlyf:MyApps:v1.0.3'
     //butterknife
@@ -53,21 +51,12 @@ dependencies {
     //json
     implementation 'com.ljx.rxhttp:converter-jackson:2.2.0'
     implementation 'com.ljx.rxhttp:converter-fastjson:2.2.0'
-    //rxhttp
-    implementation 'com.ljx.rxhttp:rxhttp:2.2.0'
-    annotationProcessor 'com.ljx.rxhttp:rxhttp-compiler:2.2.0' //生成RxHttp类
-    implementation 'com.ljx.rxlife:rxlife-coroutine:2.0.0'  //管理协程生命周期，页面销毁，关闭请求
-    implementation 'com.ljx.rxlife2:rxlife-rxjava:2.0.0'    //管理RxJava2生命周期，页面销毁，关闭请求
-
-
-
-
     // https://mvnrepository.com/artifact/commons-io/commons-io
-    implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+    implementation 'commons-io:commons-io:2.8.0'
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
-    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    //implementation 'commons-codec:commons-codec:1.15'
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-
+    //经过修改的apache codes包，因为Base64会与安卓的Base64冲突，这个包修改了包名
+    implementation files('libs/commons-codes-android-1.15.jar')
 }

@@ -1,15 +1,21 @@
 package com.xz.todolist.utils;
 
-import org.apache.commons.codec.binary.Base64;
 
-import javax.crypto.Cipher;
-import java.security.*;
+import org.apache.commons.android.codec.binary.Base64;
+
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.Cipher;
 
 /**
  * RSA
