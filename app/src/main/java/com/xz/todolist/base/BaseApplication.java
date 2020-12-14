@@ -5,6 +5,7 @@ import android.app.Application;
 
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.base.utils.PreferencesUtilV2;
+import com.xz.todolist.network.NetUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class BaseApplication extends Application {
         initLog();
         PreferencesUtilV2.initPreferencesUtils(this, "my_app");
     }
+
 
 
     /**

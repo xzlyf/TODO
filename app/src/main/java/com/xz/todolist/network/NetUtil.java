@@ -6,23 +6,35 @@ import android.util.Log;
 
 import com.google.gson.internal.$Gson$Types;
 import com.orhanobut.logger.Logger;
+import com.xz.todolist.base.BaseApplication;
 import com.xz.todolist.content.Local;
 import com.xz.utils.encodUtils.MD5Util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.nio.Buffer;
+import java.security.GeneralSecurityException;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
@@ -52,12 +64,71 @@ public class NetUtil {
 		//是否自动重连
 		okHttpBuilder.retryOnConnectionFailure(false);
 		//设置https配置
+		X509TrustManager trustManager;
+		SSLSocketFactory sslSocketFactory;
+		final InputStream inputStream;
+
+		//已有正式证书 不用添加了
+		//添加https证书
+		//try {
+		//
+		//	inputStream = BaseApplication.getInstance().getAssets().open("certs/TestCert.cer"); // 得到证书的输入流
+		//	try {
+		//
+		//		trustManager = trustManagerForCertificates(inputStream);//以流的方式读入证书
+		//		SSLContext sslContext = SSLContext.getInstance("TLS");
+		//		sslContext.init(null, new TrustManager[]{trustManager}, null);
+		//		sslSocketFactory = sslContext.getSocketFactory();
+		//
+		//	} catch (GeneralSecurityException e) {
+		//		e.printStackTrace();
+		//		throw new RuntimeException(e);
+		//	}
+		//	okHttpBuilder.sslSocketFactory(sslSocketFactory, trustManager);
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
+
+		//信任所有证书  不推荐使用
+		/*//信任所有服务器地址
+		okHttpBuilder.hostnameVerifier(new HostnameVerifier() {
+			@Override
+			public boolean verify(String s, SSLSession sslSession) {
+				//设置为true
+				return true;
+			}
+		});
+		//创建管理器
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			@Override
+			public void checkClientTrusted(
+					java.security.cert.X509Certificate[] x509Certificates,
+					String s) throws java.security.cert.CertificateException {
+			}
+
+			@Override
+			public void checkServerTrusted(
+					java.security.cert.X509Certificate[] x509Certificates,
+					String s) throws java.security.cert.CertificateException {
+			}
+
+			@Override
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return new java.security.cert.X509Certificate[] {};
+			}
+		} };
 		try {
-			okHttpBuilder.sslSocketFactory(createEasySSLContext().getSocketFactory(), new EasyX509TrustManager(null));
-		} catch (IOException | NoSuchAlgorithmException | KeyStoreException e) {
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+			//为OkHttpClient设置sslSocketFactory
+			okHttpBuilder.sslSocketFactory(sslContext.getSocketFactory());
+
+		} catch (Exception e) {
 			e.printStackTrace();
-			Log.e(TAG, "OkHttpClientManager: https Configuration failed ");
 		}
+*/
+
 		mOkHttpClient = okHttpBuilder.build();
 		mDelivery = new Handler(Looper.getMainLooper());
 	}
@@ -74,63 +145,55 @@ public class NetUtil {
 	}
 
 
-	private SSLContext createEasySSLContext() throws IOException {
-		try {
-			SSLContext context = SSLContext.getInstance("TLS");
-			context.init(null, null, null);
-			return context;
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
+
+	private X509TrustManager trustManagerForCertificates(InputStream in)
+			throws GeneralSecurityException {
+		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+		Collection<? extends Certificate> certificates = certificateFactory.generateCertificates(in);
+		if (certificates.isEmpty()) {
+			throw new IllegalArgumentException("expected non-empty set of trusted certificates");
 		}
+
+		// Put the certificates a key store.
+		char[] password = "xzlyf297".toCharArray(); // Any password will work.
+		KeyStore keyStore = newEmptyKeyStore(password);
+		int index = 0;
+		for (Certificate certificate : certificates) {
+			String certificateAlias = Integer.toString(index++);
+			keyStore.setCertificateEntry(certificateAlias, certificate);
+		}
+
+		// Use it to build an X509 trust manager.
+		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(
+				KeyManagerFactory.getDefaultAlgorithm());
+		keyManagerFactory.init(keyStore, password);
+		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+				TrustManagerFactory.getDefaultAlgorithm());
+		trustManagerFactory.init(keyStore);
+		TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+		if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+			throw new IllegalStateException("Unexpected default trust managers:"
+					+ Arrays.toString(trustManagers));
+		}
+		return (X509TrustManager) trustManagers[0];
 	}
 
-	private static class EasyX509TrustManager implements X509TrustManager {
 
-		private X509TrustManager standardTrustManager = null;
-
-		/**
-		 * Constructor for EasyX509TrustManager.
-		 */
-		private EasyX509TrustManager(KeyStore keystore) throws NoSuchAlgorithmException,
-				KeyStoreException {
-			super();
-			TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory
-					.getDefaultAlgorithm());
-			factory.init(keystore);
-			TrustManager[] trustmanagers = factory.getTrustManagers();
-			if (trustmanagers.length == 0) {
-				throw new NoSuchAlgorithmException("no trust manager found");
-			}
-			this.standardTrustManager = (X509TrustManager) trustmanagers[0];
-		}
-
-		/**
-		 * @see X509TrustManager#checkClientTrusted(X509Certificate[],
-		 * String authType)
-		 */
-		public void checkClientTrusted(X509Certificate[] certificates, String authType)
-				throws CertificateException {
-			standardTrustManager.checkClientTrusted(certificates, authType);
-		}
-
-		/**
-		 * @see X509TrustManager#checkServerTrusted(X509Certificate[],
-		 * String authType)
-		 */
-		public void checkServerTrusted(X509Certificate[] certificates, String authType)
-				throws CertificateException {
-			if ((certificates != null) && (certificates.length == 1)) {
-				certificates[0].checkValidity();
-			} else {
-				standardTrustManager.checkServerTrusted(certificates, authType);
-			}
-		}
-
-		/**
-		 * @see X509TrustManager#getAcceptedIssuers()
-		 */
-		public X509Certificate[] getAcceptedIssuers() {
-			return this.standardTrustManager.getAcceptedIssuers();
+	/**
+	 * 添加password
+	 *
+	 * @param password
+	 * @return
+	 * @throws GeneralSecurityException
+	 */
+	private KeyStore newEmptyKeyStore(char[] password) throws GeneralSecurityException {
+		try {
+			KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType()); // 这里添加自定义的密码，默认
+			InputStream in = null; // By convention, 'null' creates an empty key store.
+			keyStore.load(in, password);
+			return keyStore;
+		} catch (IOException e) {
+			throw new AssertionError(e);
 		}
 	}
 

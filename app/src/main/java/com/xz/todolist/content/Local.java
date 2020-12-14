@@ -17,8 +17,11 @@ public class Local {
             Manifest.permission.READ_EXTERNAL_STORAGE,
     };
 
-    //public static String SERVER = "https://192.168.1.66:8080/";
-    public static String SERVER = "http://106.55.150.181:28080/";//腾讯云
+    //public static String SERVER = "http://192.168.1.66:28080/";//本地tomcat
+    //public static String SERVER = "https://192.168.1.66:8080/";//IDEA spring boot 测试
+    //public static String SERVER = "http://106.55.150.181/";//腾讯云
+    public static String SERVER = "https://www.xzlyf.top/";//域名访问 已有证书  默认端口：443 不用写
+    //public static String SERVER = "http://www.xzlyf.top/";//域名访问  默认端口：80 不用写
     public static String alt_user = "/user";
     public static String alt_todolist = "/todolist";
     public static String alt_appinfo = "/appinfo";
