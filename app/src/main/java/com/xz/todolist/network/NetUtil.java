@@ -32,8 +32,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -63,71 +65,14 @@ public class NetUtil {
 		okHttpBuilder.readTimeout(15, TimeUnit.SECONDS);
 		//是否自动重连
 		okHttpBuilder.retryOnConnectionFailure(false);
-		//设置https配置
-		X509TrustManager trustManager;
-		SSLSocketFactory sslSocketFactory;
-		final InputStream inputStream;
+
 
 		//已有正式证书 不用添加了
+
 		//添加https证书
-		//try {
-		//
-		//	inputStream = BaseApplication.getInstance().getAssets().open("certs/TestCert.cer"); // 得到证书的输入流
-		//	try {
-		//
-		//		trustManager = trustManagerForCertificates(inputStream);//以流的方式读入证书
-		//		SSLContext sslContext = SSLContext.getInstance("TLS");
-		//		sslContext.init(null, new TrustManager[]{trustManager}, null);
-		//		sslSocketFactory = sslContext.getSocketFactory();
-		//
-		//	} catch (GeneralSecurityException e) {
-		//		e.printStackTrace();
-		//		throw new RuntimeException(e);
-		//	}
-		//	okHttpBuilder.sslSocketFactory(sslSocketFactory, trustManager);
-		//} catch (IOException e) {
-		//	e.printStackTrace();
-		//}
-
+		//loadCert(okHttpBuilder);
 		//信任所有证书  不推荐使用
-		/*//信任所有服务器地址
-		okHttpBuilder.hostnameVerifier(new HostnameVerifier() {
-			@Override
-			public boolean verify(String s, SSLSession sslSession) {
-				//设置为true
-				return true;
-			}
-		});
-		//创建管理器
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-			@Override
-			public void checkClientTrusted(
-					java.security.cert.X509Certificate[] x509Certificates,
-					String s) throws java.security.cert.CertificateException {
-			}
-
-			@Override
-			public void checkServerTrusted(
-					java.security.cert.X509Certificate[] x509Certificates,
-					String s) throws java.security.cert.CertificateException {
-			}
-
-			@Override
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return new java.security.cert.X509Certificate[] {};
-			}
-		} };
-		try {
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-			//为OkHttpClient设置sslSocketFactory
-			okHttpBuilder.sslSocketFactory(sslContext.getSocketFactory());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-*/
+		//trustAll(okHttpBuilder);
 
 		mOkHttpClient = okHttpBuilder.build();
 		mDelivery = new Handler(Looper.getMainLooper());
@@ -144,6 +89,81 @@ public class NetUtil {
 		return mInstance;
 	}
 
+
+	/**
+	 * 信任所有证书
+	 */
+	private void trustAll(OkHttpClient.Builder okHttpBuilder) {
+		//信任所有服务器地址
+		okHttpBuilder.hostnameVerifier(new HostnameVerifier() {
+			@Override
+			public boolean verify(String s, SSLSession sslSession) {
+				//设置为true
+				return true;
+			}
+		});
+		//创建管理器
+		TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+			@Override
+			public void checkClientTrusted(
+					java.security.cert.X509Certificate[] x509Certificates,
+					String s) throws java.security.cert.CertificateException {
+			}
+
+			@Override
+			public void checkServerTrusted(
+					java.security.cert.X509Certificate[] x509Certificates,
+					String s) throws java.security.cert.CertificateException {
+			}
+
+			@Override
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return new java.security.cert.X509Certificate[]{};
+			}
+		}};
+		try {
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+			//为OkHttpClient设置sslSocketFactory
+			okHttpBuilder.sslSocketFactory(sslContext.getSocketFactory());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 添加https证书
+	 *
+	 * @param okHttpBuilder
+	 */
+	private void loadCert(OkHttpClient.Builder okHttpBuilder) {
+		//设置https配置
+		X509TrustManager trustManager;
+		SSLSocketFactory sslSocketFactory;
+		final InputStream inputStream;
+		//添加https证书
+		try {
+
+			inputStream = BaseApplication.getInstance().getAssets().open("certs/TestCert.cer"); // 得到证书的输入流
+			try {
+
+				trustManager = trustManagerForCertificates(inputStream);//以流的方式读入证书
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(null, new TrustManager[]{trustManager}, null);
+				sslSocketFactory = sslContext.getSocketFactory();
+
+			} catch (GeneralSecurityException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+			okHttpBuilder.sslSocketFactory(sslSocketFactory, trustManager);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 
 	private X509TrustManager trustManagerForCertificates(InputStream in)
