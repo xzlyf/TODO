@@ -4,11 +4,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.base.BaseApplication;
 import com.xz.todolist.content.Local;
 import com.xz.utils.encodUtils.MD5Util;
+import com.xz.utils.netUtils.OkHttpClientManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +59,7 @@ public class NetUtil {
 	private static NetUtil mInstance;
 	private OkHttpClient mOkHttpClient;
 	private Handler mDelivery;
+	private Gson mGson;
 
 	private NetUtil() {
 		OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
@@ -72,10 +75,11 @@ public class NetUtil {
 		//添加https证书
 		//loadCert(okHttpBuilder);
 		//信任所有证书  不推荐使用
-		//trustAll(okHttpBuilder);
+		trustAll(okHttpBuilder);
 
 		mOkHttpClient = okHttpBuilder.build();
 		mDelivery = new Handler(Looper.getMainLooper());
+		mGson = new Gson();
 	}
 
 	public static NetUtil getInstance() {
@@ -265,13 +269,30 @@ public class NetUtil {
 		call.enqueue(new Callback() {
 			@Override
 			public void onFailure(Call call, IOException e) {
-				e.printStackTrace();
-				Logger.e(e.getMessage());
+				Logger.e("deliveryResult = " + e.getMessage());
+				if (e.toString().contains("closed") || e.toString().contains("Canceled")) {
+					//如果是主动取消的情况下
+				} else {
+					//                    sendFailedStringCallback(request, e, callback);
+					sendFailedStringCallback(call.request(), e, callback);
+				}
 			}
 
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
-				Logger.w(response.body().string());
+				try {
+					final String string = response.body().string();
+					if (callback.mType == String.class) {
+						sendSuccessResultCallback(string, callback);
+					} else {
+						Object o = mGson.fromJson(string, callback.mType);
+						sendSuccessResultCallback(o, callback);
+					}
+				} catch (IOException e) {
+					sendFailedStringCallback(response.request(), e, callback);
+				} catch (com.google.gson.JsonParseException e) {
+					sendFailedStringCallback(response.request(), e, callback);
+				}
 			}
 		});
 	}
@@ -288,6 +309,28 @@ public class NetUtil {
 
 		//mOkHttpClient.newCall(request).enqueue(call);
 		deliveryRequest(request, callback);
+	}
+
+
+	private void sendFailedStringCallback(final Request request, final Exception e, final ResultCallback callback) {
+		mDelivery.post(new Runnable() {
+			@Override
+			public void run() {
+				if (callback != null)
+					callback.onError(request, e);
+			}
+		});
+	}
+
+	private void sendSuccessResultCallback(final Object object, final ResultCallback callback) {
+		mDelivery.post(new Runnable() {
+			@Override
+			public void run() {
+				if (callback != null) {
+					callback.onResponse(object);
+				}
+			}
+		});
 	}
 
 

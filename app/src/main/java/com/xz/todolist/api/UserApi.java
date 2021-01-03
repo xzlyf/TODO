@@ -37,32 +37,21 @@ public class UserApi {
 	}
 
 	/**
-	 * 注册
+	 * 手机注册
 	 */
-	public void register() {
+	public void phoneRegister(String phone, String pwd, NetUtil.ResultCallback<String> callback) {
 
 		Map<String, Object> params = new HashMap<>();
-		params.put("username", "管理员");
 		try {
-			params.put("password", RSAUtil.publicEncrypt("123456", RSAUtil.getPublicKey(Local.publicKey)));
+			params.put("password", RSAUtil.publicEncrypt(pwd, RSAUtil.getPublicKey(Local.publicKey)));
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 			Logger.e("RSA运算错误");
 		}
-		params.put("phone", "17666566171");
+		params.put("phone", phone);
 		NetUtil netUtil = NetUtil.getInstance();
 		String url = Local.SERVER + Local.alt_user + Local.GET_REGISTER;
-		netUtil.get(url, params, new NetUtil.ResultCallback<String>() {
-			@Override
-			public void onError(Request request, Exception e) {
-				Logger.e(e.getMessage());
-			}
-
-			@Override
-			public void onResponse(String response) {
-				Logger.d(response);
-			}
-		});
+		netUtil.get(url, params, callback);
 	}
 
 }

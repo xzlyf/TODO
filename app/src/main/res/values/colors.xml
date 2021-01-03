@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#292929</color>
     <color name="colorAccent">#FFC107</color>
     <color name="TRANSPARENT">#00FFFFFF</color>
+    <color name="colorError">#D84E44</color>
+
+
+    <color name="red_1">#FAD8D8</color>
+
+    <color name="white_1">#E1E1E1</color>
 
     <color name="white">#ffffff</color><!--白色 -->
     <color name="ivory">#fffff0</color><!--象牙色 -->

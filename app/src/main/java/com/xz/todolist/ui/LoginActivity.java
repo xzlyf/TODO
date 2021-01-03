@@ -15,17 +15,14 @@ import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.api.UserApi;
 import com.xz.todolist.base.BaseActivity;
-import com.xz.todolist.content.Local;
+import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.ui.fragment.LoginFragment;
 import com.xz.todolist.ui.fragment.RegisterFragment;
 import com.xz.todolist.utils.ColorUtil;
-import com.xz.todolist.utils.RSAUtil;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.Request;
 
 public class LoginActivity extends BaseActivity {
 
@@ -47,6 +44,8 @@ public class LoginActivity extends BaseActivity {
 	private RegisterFragment registerFragment;
 
 	private UserApi userApi;
+	//0 登录  1注册
+	private int type = 0;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -116,16 +115,48 @@ public class LoginActivity extends BaseActivity {
 				showFragment(loginFragment);
 				tvLogin.setBackground(getDrawable(R.drawable.share_text_bottom_line));
 				tvRegister.setBackground(getDrawable(R.drawable.share_text_bottom_line_hide));
+				type = 0;
+				btnSubmit.setText("登录");
 				break;
 			case R.id.tv_register:
 				showFragment(registerFragment);
 				tvRegister.setBackground(getDrawable(R.drawable.share_text_bottom_line));
 				tvLogin.setBackground(getDrawable(R.drawable.share_text_bottom_line_hide));
+				type = 1;
+				btnSubmit.setText("注册");
 				break;
 			case R.id.btn_submit:
-				userApi.register();
+				if (type == 0) {
+					//登录
+					sToast("登录");
+				} else if (type == 1) {
+					//注册
+					phoneRegister();
+				}
 				break;
 		}
+	}
+
+
+	/**
+	 * 手机号注册
+	 */
+	private void phoneRegister() {
+		String phone = registerFragment.getPhone();
+		String pwd = registerFragment.getPwd();
+		if (phone.equals("") || pwd.equals("")) {
+			return;
+		}
+		userApi.phoneRegister(phone, pwd, new NetUtil.ResultCallback<String>() {
+			@Override
+			public void onError(Request request, Exception e) {
+			}
+
+			@Override
+			public void onResponse(String response) {
+				Logger.w("测试:" + response);
+			}
+		});
 	}
 
 
