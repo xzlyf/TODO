@@ -130,12 +130,7 @@ public class LoginActivity extends BaseActivity {
 				if (type == 0) {
 					//登录
 					sToast("登录");
-					showLoading("测试", true, new DialogInterface.OnCancelListener() {
-						@Override
-						public void onCancel(DialogInterface dialog) {
-							//取消监听
-						}
-					});
+
 				} else if (type == 1) {
 					//注册
 					phoneRegister();
@@ -154,13 +149,16 @@ public class LoginActivity extends BaseActivity {
 		if (phone.equals("") || pwd.equals("")) {
 			return;
 		}
+		showLoading("正在加载...", false, null);
 		userApi.phoneRegister(phone, pwd, new NetUtil.ResultCallback<String>() {
 			@Override
 			public void onError(Request request, Exception e) {
+				disLoading();
 			}
 
 			@Override
 			public void onResponse(String response) {
+				disLoading();
 				Logger.w("测试:" + response);
 			}
 		});

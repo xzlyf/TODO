@@ -174,14 +174,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 	private LoadingDialog loadingDialog;
 
 	@Override
-	public void showLoading(String tips, boolean cancel) {
-		showLoading(tips, cancel, null);
+	public void showLoading(String tips) {
+		showLoading(tips, true, null);
 	}
 
 	@Override
 	public void showLoading(String tips, boolean cancel, DialogInterface.OnCancelListener cancelListener) {
 		if (loadingDialog == null || !loadingDialog.isShowing()) {
 			loadingDialog = new LoadingDialog.Builder(mContext)
+					.setTips(tips)
 					.canExit(cancel)
 					.build();
 			loadingDialog.setOnCancelListener(cancelListener);

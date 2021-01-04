@@ -2,6 +2,7 @@ package com.xz.todolist.widget;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xz.todolist.R;
 import com.xz.todolist.base.BaseDialog;
@@ -14,6 +15,8 @@ import com.xz.todolist.base.BaseDialog;
 public class LoadingDialog extends BaseDialog {
 	private boolean canExit;
 	private LoadingView loadingView;
+	private TextView tipsView;
+	private String tips;
 
 	private LoadingDialog(Context context) {
 		this(context, 0);
@@ -31,8 +34,13 @@ public class LoadingDialog extends BaseDialog {
 	@Override
 	protected void initData() {
 		loadingView = findViewById(R.id.loading_view);
+		tipsView = findViewById(R.id.tv_tips);
 		setCancelable(canExit);
 		setCanceledOnTouchOutside(canExit);
+		if (tips != null) {
+			tipsView.setText(tips);
+		}
+
 	}
 
 	@Override
@@ -56,9 +64,16 @@ public class LoadingDialog extends BaseDialog {
 			return this;
 		}
 
+		public Builder setTips(String tips) {
+			dialog.tips = tips;
+			return this;
+		}
+
 		public LoadingDialog build() {
 			dialog.create();
 			return dialog;
 		}
+
+
 	}
 }

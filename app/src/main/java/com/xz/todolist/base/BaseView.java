@@ -3,7 +3,7 @@ package com.xz.todolist.base;
 import android.content.DialogInterface;
 
 public interface BaseView {
-    void showLoading(String tips, boolean cancel);
+    void showLoading(String tips);
     void showLoading(String tips, boolean cancel, DialogInterface.OnCancelListener cancelListener);
     void disLoading();
     void sToast(String text);
