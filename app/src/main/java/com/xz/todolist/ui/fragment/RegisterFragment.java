@@ -1,20 +1,19 @@
 package com.xz.todolist.ui.fragment;
 
 import android.content.Context;
-import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.base.BaseFragment;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * @author czr
@@ -32,6 +31,11 @@ public class RegisterFragment extends BaseFragment {
 	EditText etRepeatPwd;
 	@BindView(R.id.alter_pwd)
 	ImageView alterPwd;
+	@BindView(R.id.tv_tips)
+	TextView tvTips;
+
+	//密码不符合规范
+	private boolean isNotFit = false;
 
 	@Override
 	protected int getLayout() {
@@ -106,12 +110,13 @@ public class RegisterFragment extends BaseFragment {
 	 */
 	private void sensePwd() {
 		if (!etRepeatPwd.getText().toString().equals(etPwd.getText().toString())) {
-			//sToast("两次密码不一样");
 			setErrorState(etRepeatPwd);
 			setErrorState(etPwd);
+			isNotFit = true;
 		} else {
 			setNormalState(etRepeatPwd);
 			setNormalState(etPwd);
+			isNotFit = false;
 		}
 	}
 
@@ -150,8 +155,18 @@ public class RegisterFragment extends BaseFragment {
 	}
 
 	public String getPwd() {
+
+		if (isNotFit) {
+			setErrorState(etRepeatPwd);
+			setErrorState(etPwd);
+			tvTips.setText("两处密码不一致");
+			return "";
+		}else{
+			tvTips.setText("");
+		}
+
 		String pwd = etPwd.getText().toString().trim();
-		String rePwd = etRepeatPwd.toString().trim();
+		String rePwd = etRepeatPwd.getText().toString().trim();
 		if (pwd.equals("")) {
 			setErrorState(etPwd);
 			return "";
@@ -161,6 +176,14 @@ public class RegisterFragment extends BaseFragment {
 			setErrorState(etRepeatPwd);
 			return "";
 		}
+		if (rePwd.length() < 6) {
+			setErrorState(etRepeatPwd);
+			setErrorState(etPwd);
+			tvTips.setText("密码长度不可以小于6位");
+			return "";
+		}
+
+
 		return etRepeatPwd.getText().toString().trim();
 	}
 
