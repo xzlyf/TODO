@@ -120,7 +120,7 @@ public class RegisterFragment extends BaseFragment {
 	 *
 	 * @param view
 	 */
-	public void setNormalState(View view) {
+	private void setNormalState(View view) {
 		view.setBackgroundResource(R.drawable.select_edit);
 	}
 
@@ -129,7 +129,7 @@ public class RegisterFragment extends BaseFragment {
 	 *
 	 * @param view
 	 */
-	public void setErrorState(View view) {
+	private void setErrorState(View view) {
 		view.setBackgroundResource(R.drawable.select_edit_error);
 	}
 

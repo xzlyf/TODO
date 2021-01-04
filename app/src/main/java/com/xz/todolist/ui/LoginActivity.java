@@ -1,5 +1,6 @@
 package com.xz.todolist.ui;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.View;
@@ -129,6 +130,12 @@ public class LoginActivity extends BaseActivity {
 				if (type == 0) {
 					//登录
 					sToast("登录");
+					showLoading("测试", true, new DialogInterface.OnCancelListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							//取消监听
+						}
+					});
 				} else if (type == 1) {
 					//注册
 					phoneRegister();

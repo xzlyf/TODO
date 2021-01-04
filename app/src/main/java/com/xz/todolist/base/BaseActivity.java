@@ -34,6 +34,7 @@ import com.xz.todolist.R;
 import com.xz.todolist.base.utils.ToastUtil;
 import com.xz.todolist.content.Local;
 import com.xz.todolist.utils.ColorUtil;
+import com.xz.todolist.widget.LoadingDialog;
 import com.xz.utils.appUtils.TransparentBarUtil;
 
 import butterknife.ButterKnife;
@@ -170,12 +171,33 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 		return true;
 	}
 
+	private LoadingDialog loadingDialog;
+
 	@Override
 	public void showLoading(String tips, boolean cancel) {
+		showLoading(tips, cancel, null);
+	}
+
+	@Override
+	public void showLoading(String tips, boolean cancel, DialogInterface.OnCancelListener cancelListener) {
+		if (loadingDialog == null || !loadingDialog.isShowing()) {
+			loadingDialog = new LoadingDialog.Builder(mContext)
+					.canExit(cancel)
+					.build();
+			loadingDialog.setOnCancelListener(cancelListener);
+		}
+		loadingDialog.show();
 	}
 
 	@Override
 	public void disLoading() {
+		if (loadingDialog != null) {
+			if (loadingDialog.isShowing()) {
+				loadingDialog.cancel();
+			}
+			loadingDialog = null;
+		}
+
 	}
 
 	@Override
