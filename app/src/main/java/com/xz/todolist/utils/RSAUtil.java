@@ -27,6 +27,7 @@ import java.util.Map;
 public class RSAUtil {
     public static final String CHARSET = "UTF-8";
     public static final String RSA_ALGORITHM = "RSA"; // ALGORITHM ['ælgərɪð(ə)m] 算法的意思
+    public static final String RSA = "RSA/ECB/PKCS1Padding";
 
     // 简单测试____________
     public static void main(String[] args) throws Exception {
@@ -119,7 +120,7 @@ public class RSAUtil {
      */
     public static String publicEncrypt(String data, RSAPublicKey publicKey) {
         try {
-            Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
+            Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
         } catch (Exception e) {
@@ -137,7 +138,7 @@ public class RSAUtil {
 
     public static String privateDecrypt(String data, RSAPrivateKey privateKey) {
         try {
-            Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
+            Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), privateKey.getModulus().bitLength()), CHARSET);
         } catch (Exception e) {
@@ -155,7 +156,7 @@ public class RSAUtil {
 
     public static String privateEncrypt(String data, RSAPrivateKey privateKey) {
         try {
-            Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
+            Cipher cipher = Cipher.getInstance(RSA);
             //每个Cipher初始化方法使用一个模式参数opmod，并用此模式初始化Cipher对象。此外还有其他参数，包括密钥key、包含密钥的证书certificate、算法参数params和随机源random。
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
             return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), privateKey.getModulus().bitLength()));
@@ -174,7 +175,7 @@ public class RSAUtil {
 
     public static String publicDecrypt(String data, RSAPublicKey publicKey) {
         try {
-            Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
+            Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
             return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET);
         } catch (Exception e) {

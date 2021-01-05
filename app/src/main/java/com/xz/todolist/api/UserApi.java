@@ -42,14 +42,16 @@ public class UserApi {
 	public void phoneRegister(String phone, String pwd, NetUtil.ResultCallback<String> callback) {
 
 		Map<String, Object> params = new HashMap<>();
-		//try {
-			//params.put("password", RSAUtil.publicEncrypt(pwd, RSAUtil.getPublicKey(Local.publicKey)));
-			params.put("password", pwd);
+		try {
+			params.put("password", RSAUtil.publicEncrypt(pwd, RSAUtil.getPublicKey(Local.publicKey)));
+			//params.put("password", pwd);
 
-		//} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-		//	e.printStackTrace();
-		//	Logger.e("RSA运算错误");
-		//}
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			e.printStackTrace();
+			Logger.e("RSA运算错误");
+			callback.onError(null, e);
+			return;
+		}
 		params.put("phone", phone);
 		NetUtil netUtil = NetUtil.getInstance();
 		String url = Local.SERVER + Local.alt_user + Local.GET_REGISTER;
