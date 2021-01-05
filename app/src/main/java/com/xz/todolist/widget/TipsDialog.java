@@ -90,6 +90,7 @@ public class TipsDialog extends BaseDialog {
 				if (onSubmitListener != null) {
 					onSubmitListener.onClick(TipsDialog.this);
 				}
+				TipsDialog.this.cancel();
 			}
 		});
 	}
@@ -118,8 +119,10 @@ public class TipsDialog extends BaseDialog {
 	private void generalType() {
 		rootView.setBackgroundResource(R.drawable.share_round_general);
 		btnSubmit.setBackgroundResource(R.drawable.select_dialog_general);
-		imgCancel.setColorFilter(getContext().getColor(R.color.yellow_10));
+		imgCancel.setColorFilter(getContext().getColor(R.color.yellow_5));
 		imgType.setImageResource(R.mipmap.ic_mark_smile);
+		tvTitle.setTextColor(getContext().getColor(R.color.gray_6));
+		tvContent.setTextColor(getContext().getColor(R.color.gray_6));
 	}
 
 	private void successType() {

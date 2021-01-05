@@ -131,24 +131,6 @@ public class LoginActivity extends BaseActivity {
 				if (type == 0) {
 					//登录
 					sToast("登录");
-					TipsDialog tipsDialog = new TipsDialog.Builder(mContext)
-							.setTitle("Emmm...出错了")
-							.setContent("测试测试测试测试测试测试")
-							.setType(TipsDialog.STYLE_WARN)
-							.setOnSubmitListener(new TipsDialog.OnSubmitListener() {
-								@Override
-								public void onClick(TipsDialog dialog) {
-									Logger.w("提交");
-								}
-							})
-							.setOnCancelListener(new TipsDialog.OnCancelListener() {
-								@Override
-								public void onCancel(TipsDialog dialog) {
-									Logger.w("取消");
-								}
-							})
-							.build();
-					tipsDialog.show();
 				} else if (type == 1) {
 					//注册
 					phoneRegister();

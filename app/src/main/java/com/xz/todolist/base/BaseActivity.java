@@ -35,6 +35,7 @@ import com.xz.todolist.base.utils.ToastUtil;
 import com.xz.todolist.content.Local;
 import com.xz.todolist.utils.ColorUtil;
 import com.xz.todolist.widget.LoadingDialog;
+import com.xz.todolist.widget.TipsDialog;
 import com.xz.utils.appUtils.TransparentBarUtil;
 
 import butterknife.ButterKnife;
@@ -43,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 	protected final String TAG = this.getClass().getSimpleName();
 
 	protected Activity mContext;
+	protected TipsDialog tipsDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -213,12 +215,23 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
 	@Override
 	public void sDialog(String title, String msg) {
-
+		dDialog();
+		tipsDialog = new TipsDialog.Builder(mContext)
+				.setTitle(title)
+				.setContent(msg)
+				.setType(TipsDialog.STYLE_GENERAL)
+				.build();
+		tipsDialog.show();
 	}
 
 	@Override
 	public void dDialog() {
-
+		if (tipsDialog != null) {
+			if (tipsDialog.isShowing()) {
+				tipsDialog.dismiss();
+			}
+			tipsDialog = null;
+		}
 	}
 
 	/**
