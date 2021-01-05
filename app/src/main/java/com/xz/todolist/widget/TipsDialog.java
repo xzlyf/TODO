@@ -34,8 +34,9 @@ public class TipsDialog extends BaseDialog {
 	/**
 	 * 对话框内容
 	 */
-	private String title;
-	private String content;
+	private String title = "请替换";
+	private String content = "请替换";
+	private String submitSt = "submit";
 	/**
 	 * 类型
 	 */
@@ -113,6 +114,7 @@ public class TipsDialog extends BaseDialog {
 		}
 		tvTitle.setText(title);
 		tvContent.setText(content);
+		btnSubmit.setText(submitSt);
 		super.show();
 	}
 
@@ -169,6 +171,14 @@ public class TipsDialog extends BaseDialog {
 		 */
 		public Builder setContent(String content) {
 			tipsDialog.content = content;
+			return this;
+		}
+
+		/**
+		 * 按钮文本
+		 */
+		public Builder setSubmitText(String text) {
+			tipsDialog.submitSt = text;
 			return this;
 		}
 

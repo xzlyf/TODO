@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.alibaba.fastjson.JSON;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.api.UserApi;
@@ -21,6 +22,9 @@ import com.xz.todolist.ui.fragment.LoginFragment;
 import com.xz.todolist.ui.fragment.RegisterFragment;
 import com.xz.todolist.utils.ColorUtil;
 import com.xz.todolist.widget.TipsDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -159,7 +163,47 @@ public class LoginActivity extends BaseActivity {
 			@Override
 			public void onResponse(String response) {
 				disLoading();
-				Logger.w("测试:" + response);
+
+				try {
+					JSONObject obj = new JSONObject(response);
+					int code = obj.getInt("code");
+					if (code == 0) {
+						new TipsDialog.Builder(mContext)
+								.setType(TipsDialog.STYLE_SUCCESS)
+								.setTitle("马上就好啦")
+								.setContent("账号注册成功")
+								.setSubmitText("马上登录")
+								.setOnSubmitListener(new TipsDialog.OnSubmitListener() {
+									@Override
+									public void onClick(TipsDialog dialog) {
+										dialog.dismiss();
+										showFragment(loginFragment);
+									}
+								})
+								.build()
+								.show();
+					} else if (code == 1048) {
+						new TipsDialog.Builder(mContext)
+								.setType(TipsDialog.STYLE_WARN)
+								.setTitle("Emmm...出错了")
+								.setContent("手机号已注册了哦")
+								.setSubmitText("让我想想")
+								.build()
+								.show();
+					} else {
+						new TipsDialog.Builder(mContext)
+								.setType(TipsDialog.STYLE_ERROR)
+								.setTitle("Emmm...异常")
+								.setContent("系统异常")
+								.setSubmitText("那就稍后再试吧")
+								.build()
+								.show();
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
 			}
 		});
 	}
