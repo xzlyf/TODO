@@ -186,7 +186,7 @@ public class LoginActivity extends BaseActivity {
 						new TipsDialog.Builder(mContext)
 								.setType(TipsDialog.STYLE_WARN)
 								.setTitle("Emmm...出错了")
-								.setContent("手机号已注册了哦")
+								.setContent(obj.optString("status"))
 								.setSubmitText("让我想想")
 								.build()
 								.show();
@@ -202,6 +202,13 @@ public class LoginActivity extends BaseActivity {
 
 				} catch (JSONException e) {
 					e.printStackTrace();
+					new TipsDialog.Builder(mContext)
+							.setType(TipsDialog.STYLE_ERROR)
+							.setTitle("Emmm...奔溃了")
+							.setContent("系统异常:" + e.getMessage())
+							.setSubmitText("那就稍后再试吧")
+							.build()
+							.show();
 				}
 
 			}
