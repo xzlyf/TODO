@@ -5,12 +5,18 @@ import com.xz.todolist.content.Local;
 import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.utils.RSAUtil;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @author czr
@@ -21,8 +27,10 @@ import okhttp3.Request;
 public class UserApi {
 	private static final String TAG = UserApi.class.getName();
 	private static UserApi instance;
+	private NetUtil netUtil;
 
 	private UserApi() {
+		netUtil = NetUtil.getInstance();
 	}
 
 	public static UserApi getInstance() {
@@ -53,9 +61,29 @@ public class UserApi {
 			return;
 		}
 		params.put("phone", phone);
-		NetUtil netUtil = NetUtil.getInstance();
-		String url = Local.SERVER + Local.alt_user + Local.GET_REGISTER;
-		netUtil.get(url, params, callback);
+		netUtil.get(Local.BASE_URL_USER + Local.GET_REGISTER, params, callback);
+	}
+
+	/**
+	 * 登录
+	 *
+	 * @param type 1-手机登录 2-账号登录 3-token登录
+	 */
+	public void login(int type, String account, String pwd, NetUtil.ResultCallback<String> callback) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("account", account);
+		params.put("type", type);
+		try {
+			params.put("password", RSAUtil.publicEncrypt(pwd, RSAUtil.getPublicKey(Local.publicKey)));
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			e.printStackTrace();
+			Logger.e("RSA运算错误");
+			callback.onError(null, e);
+			return;
+		}
+
+		netUtil.post(Local.BASE_URL_USER + Local.GET_LOGIN, params, callback);
+
 	}
 
 }

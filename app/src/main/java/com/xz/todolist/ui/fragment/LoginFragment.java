@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.xz.todolist.R;
 import com.xz.todolist.base.BaseFragment;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -16,21 +17,17 @@ import butterknife.OnClick;
  * @date 2020/12/10
  */
 public class LoginFragment extends BaseFragment {
-	//@BindView(R.id.tv_type)
-	//TextView tvType;
-	//@BindView(R.id.tv_forget)
-	//TextView tvForget;
-	//@BindView(R.id.et_user)
-	//EditText etUser;
-	//@BindView(R.id.et_pwd)
-	//EditText etPwd;
+	@BindView(R.id.tv_type)
+	TextView tvType;
+	@BindView(R.id.tv_forget)
+	TextView tvForget;
+	@BindView(R.id.et_user)
+	EditText etUser;
+	@BindView(R.id.et_pwd)
+	EditText etPwd;
 
 	//当前页面  1-账号登录 2-手机号登录 3-注册 4-忘记密码
 	private int type = 1;
-	private EditText etUser;
-	private EditText etPwd;
-	private TextView tvType;
-	private TextView tvForget;
 
 	@Override
 	protected int getLayout() {
@@ -39,16 +36,12 @@ public class LoginFragment extends BaseFragment {
 
 	@Override
 	protected void initView(View rootView) {
-
-		etUser = rootView.findViewById(R.id.et_user);
-		etPwd = rootView.findViewById(R.id.et_pwd);
-		tvType = rootView.findViewById(R.id.tv_type);
-		tvForget = rootView.findViewById(R.id.tv_forget);
 	}
 
 	@Override
 	protected void initDate(Context mContext) {
-
+		etUser.setOnFocusChangeListener(focusChangeListener);
+		etPwd.setOnFocusChangeListener(focusChangeListener);
 	}
 
 	@OnClick({R.id.tv_type, R.id.tv_forget})
@@ -69,12 +62,62 @@ public class LoginFragment extends BaseFragment {
 		}
 	}
 
+	private View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			if (hasFocus) {
+				setNormalState(v);
+			}
+		}
+	};
+
 	/**
-	 * 设定账号
+	 * 设置view默认状态
+	 *
+	 * @param view
+	 */
+	private void setNormalState(View view) {
+		view.setBackgroundResource(R.drawable.select_edit);
+	}
+
+	/**
+	 * 设置view错误状态
+	 *
+	 * @param view
+	 */
+	private void setErrorState(View view) {
+		view.setBackgroundResource(R.drawable.select_edit_error);
+	}
+
+	/**
+	 * /**
+	 * --------开放接口---------
 	 */
 	public void setUserNo(String userNo) {
 		etUser.setText(userNo);
 		etPwd.setFocusable(true);
+	}
+
+	public String getUserNo() {
+		String no = etUser.getText().toString().trim();
+		if (no.equals("")) {
+			setErrorState(etUser);
+			return "";
+		}
+		return no;
+	}
+
+	public String getPwd() {
+		String pwd = etPwd.getText().toString().trim();
+		if (pwd.equals("")) {
+			setErrorState(etPwd);
+			return "";
+		}
+		return pwd;
+	}
+
+	public void setPwdError() {
+		setErrorState(etPwd);
 	}
 
 }

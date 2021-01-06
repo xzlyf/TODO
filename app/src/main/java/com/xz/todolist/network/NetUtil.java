@@ -2,34 +2,28 @@ package com.xz.todolist.network;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.base.BaseApplication;
 import com.xz.todolist.content.Local;
-import com.xz.utils.encodUtils.MD5Util;
-import com.xz.utils.netUtils.OkHttpClientManager;
+import com.xz.todolist.utils.RSAUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
-import java.nio.Buffer;
 import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -45,8 +39,11 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -297,20 +294,6 @@ public class NetUtil {
 		});
 	}
 
-	public void get(String url, Map<String, Object> params, ResultCallback callback) {
-		long timestamp = System.currentTimeMillis();
-		Request request = new Request.Builder()
-				.addHeader("appid", Local.appId)
-				.addHeader("timestamp", String.valueOf(timestamp))
-				.addHeader("version", Local.version)
-				.addHeader("sign", MD5Util.getMD5(Local.appId + Local.appSecret + timestamp + Local.version))
-				.url(attachHttpGetParams(url, params, true))
-				.build();
-
-		//mOkHttpClient.newCall(request).enqueue(call);
-		deliveryRequest(request, callback);
-	}
-
 
 	private void sendFailedStringCallback(final Request request, final Exception e, final ResultCallback callback) {
 		mDelivery.post(new Runnable() {
@@ -332,7 +315,6 @@ public class NetUtil {
 			}
 		});
 	}
-
 
 	/**
 	 * 结果回调接口
@@ -359,5 +341,56 @@ public class NetUtil {
 
 		public abstract void onResponse(T response);
 	}
+
+	/**
+	 * 通用GET请求格式
+	 */
+	private Request buildGetRequest(long timestamp, String url, Map<String, Object> params) {
+		return new Request.Builder()
+				.addHeader("appid", Local.appId)
+				.addHeader("timestamp", String.valueOf(timestamp))
+				.addHeader("version", Local.version)
+				.addHeader("sign", SecretUtil.getSecret(timestamp))
+				.url(attachHttpGetParams(url, params, true))
+				.build();
+	}
+
+	/**
+	 * 通用POST请求格式
+	 */
+	private Request buildPostRequest(long timestamp, String url, Map<String, Object> params) {
+		if (params == null) {
+			params = new HashMap<>();
+		}
+		FormBody.Builder builder = new FormBody.Builder();
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			builder.add(entry.getKey(), entry.getValue().toString());
+		}
+		RequestBody requestBody = builder.build();
+		return new Request.Builder()
+				.addHeader("appid", Local.appId)
+				.addHeader("timestamp", String.valueOf(timestamp))
+				.addHeader("version", Local.version)
+				.addHeader("sign", SecretUtil.getSecret(timestamp))
+				.url(url)
+				.post(requestBody)
+				.build();
+	}
+
+	/**
+	 * =============公开请求方法==============
+	 */
+
+	public void get(String url, Map<String, Object> params, ResultCallback callback) {
+		Request request = buildGetRequest(System.currentTimeMillis(), url, params);
+		deliveryRequest(request, callback);
+	}
+
+	public void post(String url, Map<String, Object> params, ResultCallback callback) {
+		Request request = buildPostRequest(System.currentTimeMillis(), url, params);
+		deliveryRequest(request, callback);
+
+	}
+
 
 }

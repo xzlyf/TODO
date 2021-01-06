@@ -153,13 +153,37 @@ public class LoginActivity extends BaseActivity {
 				}
 				if (type == 0) {
 					//登录
-					sToast("登录");
+					phoneLogin();
 				} else if (type == 1) {
 					//注册
 					phoneRegister();
 				}
 				break;
 		}
+	}
+
+	/**
+	 * 手机号密码登录
+	 */
+	private void phoneLogin() {
+		String phone = loginFragment.getUserNo();
+		String pwd = loginFragment.getPwd();
+		if (phone.equals("") || pwd.equals("")) {
+			return;
+		}
+
+		userApi.login(1, phone, pwd, new NetUtil.ResultCallback<String>() {
+			@Override
+			public void onError(Request request, Exception e) {
+				Logger.e("出错了:" + e.getMessage());
+			}
+
+			@Override
+			public void onResponse(String response) {
+				Logger.w("成功了:" + response);
+			}
+		});
+
 	}
 
 
