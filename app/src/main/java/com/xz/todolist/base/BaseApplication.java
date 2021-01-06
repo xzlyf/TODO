@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.orhanobut.logger.Logger;
+import com.xz.todolist.crash.CrashHandler;
 import com.xz.todolist.base.utils.PreferencesUtilV2;
-import com.xz.todolist.network.NetUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,10 @@ public class BaseApplication extends Application {
         instance = this;
         initLog();
         PreferencesUtilV2.initPreferencesUtils(this, "my_app");
+        //开启奔溃日志处理保存
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+
     }
 
 

@@ -2,6 +2,7 @@ package com.xz.todolist.ui;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.text.Html;
 import android.view.View;
 import android.widget.CheckBox;
@@ -107,7 +108,6 @@ public class LoginActivity extends BaseActivity {
 	 * 注册与使用协议
 	 */
 	private void getProtocol() {
-		//tvProtocol.setText(Html.fromHtml("《<a href=\"https://www.baidu.com\">用户注册协议</a>》"));
 		tvProtocol.setText(Html.fromHtml("《<font color=\"" + ColorUtil.int2Hex(getColor(R.color.colorAccent)) + "\">注册与使用协议</font>》"));
 	}
 
@@ -132,12 +132,18 @@ public class LoginActivity extends BaseActivity {
 				btnSubmit.setText("注册");
 				break;
 			case R.id.btn_submit:
+				if (!boxProtocol.isChecked()) {
+					sToast("请先阅读并同意");
+					return;
+				}
 				if (type == 0) {
 					//登录
 					sToast("登录");
 				} else if (type == 1) {
 					//注册
-					phoneRegister();
+					//phoneRegister();
+					onViewClick(tvLogin);
+					loginFragment.setUserNo("123");
 				}
 				break;
 		}
@@ -177,7 +183,9 @@ public class LoginActivity extends BaseActivity {
 									@Override
 									public void onClick(TipsDialog dialog) {
 										dialog.dismiss();
-										showFragment(loginFragment);
+										onViewClick(tvLogin);
+										loginFragment.setUserNo(phone);
+
 									}
 								})
 								.build()

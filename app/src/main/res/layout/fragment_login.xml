@@ -8,12 +8,14 @@
     android:padding="10dp">
 
     <EditText
+        android:id="@+id/et_user"
         style="@style/InputEditCommonTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="请输入手机号/账号" />
 
     <EditText
+        android:id="@+id/et_pwd"
         style="@style/InputEditCommonTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

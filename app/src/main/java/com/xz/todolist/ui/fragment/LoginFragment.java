@@ -2,12 +2,12 @@ package com.xz.todolist.ui.fragment;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.xz.todolist.R;
 import com.xz.todolist.base.BaseFragment;
 
-import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -16,13 +16,21 @@ import butterknife.OnClick;
  * @date 2020/12/10
  */
 public class LoginFragment extends BaseFragment {
-	@BindView(R.id.tv_type)
-	TextView tvType;
-	@BindView(R.id.tv_forget)
-	TextView tvForget;
+	//@BindView(R.id.tv_type)
+	//TextView tvType;
+	//@BindView(R.id.tv_forget)
+	//TextView tvForget;
+	//@BindView(R.id.et_user)
+	//EditText etUser;
+	//@BindView(R.id.et_pwd)
+	//EditText etPwd;
 
 	//当前页面  1-账号登录 2-手机号登录 3-注册 4-忘记密码
 	private int type = 1;
+	private EditText etUser;
+	private EditText etPwd;
+	private TextView tvType;
+	private TextView tvForget;
 
 	@Override
 	protected int getLayout() {
@@ -32,6 +40,10 @@ public class LoginFragment extends BaseFragment {
 	@Override
 	protected void initView(View rootView) {
 
+		etUser = rootView.findViewById(R.id.et_user);
+		etPwd = rootView.findViewById(R.id.et_pwd);
+		tvType = rootView.findViewById(R.id.tv_type);
+		tvForget = rootView.findViewById(R.id.tv_forget);
 	}
 
 	@Override
@@ -55,6 +67,14 @@ public class LoginFragment extends BaseFragment {
 				break;
 
 		}
+	}
+
+	/**
+	 * 设定账号
+	 */
+	public void setUserNo(String userNo) {
+		etUser.setText(userNo);
+		etPwd.setFocusable(true);
 	}
 
 }
