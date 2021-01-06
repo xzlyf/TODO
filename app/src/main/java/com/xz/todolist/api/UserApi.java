@@ -78,11 +78,13 @@ public class UserApi {
 	 * @param type 1-手机登录 2-账号登录 3-token登录
 	 */
 	public void login(int type, String account, String pwd, NetUtil.ResultCallback<String> callback) {
+		long timestamp = System.currentTimeMillis();
 		Map<String, Object> params = new HashMap<>();
 		params.put("account", account);
 		params.put("type", type);
 		try {
-			params.put("password", RSAUtil.publicEncrypt(pwd, RSAUtil.getPublicKey(Local.publicKey)));
+			//密码规则=明文密码+时间戳
+			params.put("password", RSAUtil.publicEncrypt(pwd + timestamp, RSAUtil.getPublicKey(Local.publicKey)));
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 			Logger.e("RSA运算错误");
@@ -90,7 +92,9 @@ public class UserApi {
 			return;
 		}
 
-		netUtil.post(Local.BASE_URL_USER + Local.GET_LOGIN, params, callback);
+		Logger.w(params.get("password") + "");
+
+		netUtil.post(timestamp, Local.BASE_URL_USER + Local.GET_LOGIN, params, callback);
 	}
 
 

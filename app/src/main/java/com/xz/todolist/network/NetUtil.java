@@ -386,8 +386,13 @@ public class NetUtil {
 		deliveryRequest(request, callback);
 	}
 
+
 	public void post(String url, Map<String, Object> params, ResultCallback callback) {
-		Request request = buildPostRequest(System.currentTimeMillis(), url, params);
+		post(System.currentTimeMillis(), url, params, callback);
+	}
+
+	public void post(long timestamp, String url, Map<String, Object> params, ResultCallback callback) {
+		Request request = buildPostRequest(timestamp, url, params);
 		deliveryRequest(request, callback);
 	}
 

@@ -22,6 +22,7 @@ import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.ui.fragment.LoginFragment;
 import com.xz.todolist.ui.fragment.RegisterFragment;
 import com.xz.todolist.utils.ColorUtil;
+import com.xz.todolist.utils.TipsDialogUtil;
 import com.xz.todolist.widget.TipsDialog;
 
 import org.json.JSONException;
@@ -172,16 +173,27 @@ public class LoginActivity extends BaseActivity {
 		if (phone.equals("") || pwd.equals("")) {
 			return;
 		}
-
+		showLoading("正在登录...");
 		userApi.login(1, phone, pwd, new NetUtil.ResultCallback<String>() {
 			@Override
 			public void onError(Request request, Exception e) {
-				Logger.e("出错了:" + e.getMessage());
+				disLoading();
+				TipsDialogUtil.badNetDialog(mContext);
 			}
 
 			@Override
 			public void onResponse(String response) {
-				Logger.w("成功了:" + response);
+				disLoading();
+
+				//待完成json解析
+				//try {
+				//	JSONObject obj = new JSONObject(response);
+				//
+				//
+				//} catch (JSONException e) {
+				//	e.printStackTrace();
+				//}
+
 			}
 		});
 
@@ -202,6 +214,8 @@ public class LoginActivity extends BaseActivity {
 			@Override
 			public void onError(Request request, Exception e) {
 				disLoading();
+				TipsDialogUtil.badNetDialog(mContext);
+
 			}
 
 			@Override
