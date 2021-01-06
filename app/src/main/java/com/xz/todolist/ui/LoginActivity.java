@@ -47,8 +47,10 @@ public class LoginActivity extends BaseActivity {
 	TextView tvProtocol;
 	private FragmentTransaction transaction;
 	private FragmentManager manager;
+	private Fragment mContent;
 	private LoginFragment loginFragment;
 	private RegisterFragment registerFragment;
+
 
 	private UserApi userApi;
 	//0 登录  1注册
@@ -75,8 +77,6 @@ public class LoginActivity extends BaseActivity {
 		userApi = UserApi.getInstance();
 		getProtocol();
 		initFragment();
-		showFragment(loginFragment);
-
 
 	}
 
@@ -94,14 +94,29 @@ public class LoginActivity extends BaseActivity {
 		//transaction.show(loginFragment);
 		//transaction.hide(registerFragment);
 		//transaction.commitAllowingStateLoss();
-
 		manager = getSupportFragmentManager();      //初始化管理者
+
+		transaction = manager.beginTransaction();
+		//设置默认默认fragment
+		transaction.add(R.id.main_fragment, loginFragment).commit();
+		mContent = loginFragment;
+
 	}
 
+
+	/**
+	 * 不重新加载fragment的切换fragment
+	 */
 	private void showFragment(Fragment fragment) {
-		transaction = manager.beginTransaction();        //开启事务
-		transaction.replace(R.id.main_fragment, fragment);
-		transaction.commit();//提交事务
+		if (mContent != fragment) {
+			transaction = manager.beginTransaction();
+			if (!fragment.isAdded()) {    // 先判断是否被add过
+				transaction.hide(mContent).add(R.id.main_fragment, fragment).commit(); // 隐藏当前的fragment，add下一个到Activity中
+			} else {
+				transaction.hide(mContent).show(fragment).commit(); // 隐藏当前的fragment，显示下一个
+			}
+			mContent = fragment;
+		}
 	}
 
 	/**
@@ -141,9 +156,7 @@ public class LoginActivity extends BaseActivity {
 					sToast("登录");
 				} else if (type == 1) {
 					//注册
-					//phoneRegister();
-					onViewClick(tvLogin);
-					loginFragment.setUserNo("123");
+					phoneRegister();
 				}
 				break;
 		}
