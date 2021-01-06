@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.internal.$Gson$Types;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.base.BaseApplication;
@@ -40,7 +41,7 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -65,9 +66,10 @@ public class NetUtil {
 		okHttpBuilder.readTimeout(15, TimeUnit.SECONDS);
 		//是否自动重连
 		okHttpBuilder.retryOnConnectionFailure(false);
+		//禁制OkHttp的重定向操作
+		//okHttpBuilder.followRedirects(false);
+		//okHttpBuilder.followSslRedirects(false);
 
-
-		//已有正式证书 不用添加了
 
 		//添加https证书
 		//loadCert(okHttpBuilder);
@@ -285,9 +287,7 @@ public class NetUtil {
 						Object o = mGson.fromJson(string, callback.mType);
 						sendSuccessResultCallback(o, callback);
 					}
-				} catch (IOException e) {
-					sendFailedStringCallback(response.request(), e, callback);
-				} catch (com.google.gson.JsonParseException e) {
+				} catch (IOException | JsonParseException e) {
 					sendFailedStringCallback(response.request(), e, callback);
 				}
 			}
@@ -389,7 +389,6 @@ public class NetUtil {
 	public void post(String url, Map<String, Object> params, ResultCallback callback) {
 		Request request = buildPostRequest(System.currentTimeMillis(), url, params);
 		deliveryRequest(request, callback);
-
 	}
 
 

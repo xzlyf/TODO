@@ -147,6 +147,7 @@ public class LoginActivity extends BaseActivity {
 				btnSubmit.setText("注册");
 				break;
 			case R.id.btn_submit:
+
 				if (!boxProtocol.isChecked()) {
 					sToast("请先阅读并同意");
 					return;
