@@ -18,7 +18,9 @@ import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.api.UserApi;
 import com.xz.todolist.base.BaseActivity;
+import com.xz.todolist.content.Local;
 import com.xz.todolist.network.NetUtil;
+import com.xz.todolist.network.StatusEnum;
 import com.xz.todolist.ui.fragment.LoginFragment;
 import com.xz.todolist.ui.fragment.RegisterFragment;
 import com.xz.todolist.utils.ColorUtil;
@@ -185,14 +187,30 @@ public class LoginActivity extends BaseActivity {
 			public void onResponse(String response) {
 				disLoading();
 
-				//待完成json解析
-				//try {
-				//	JSONObject obj = new JSONObject(response);
-				//
-				//
-				//} catch (JSONException e) {
-				//	e.printStackTrace();
-				//}
+				try {
+					JSONObject obj = new JSONObject(response);
+					int code = obj.optInt("code", -1);
+
+					switch (code) {
+						case 1:
+							Local.token = obj.optString("data");
+							sToast("登录成功");
+							break;
+						case 1049:
+						case 1050:
+						case 1051:
+							TipsDialogUtil.commonDialog(mContext, StatusEnum.getValue(code));
+							break;
+						default:
+							TipsDialogUtil.systemErrorDialog(mContext);
+							break;
+					}
+
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+					TipsDialogUtil.serverErrorDialog(mContext);
+				}
 
 			}
 		});
@@ -225,7 +243,7 @@ public class LoginActivity extends BaseActivity {
 				try {
 					JSONObject obj = new JSONObject(response);
 					int code = obj.getInt("code");
-					if (code == 0) {
+					if (code == 1) {
 						new TipsDialog.Builder(mContext)
 								.setType(TipsDialog.STYLE_SUCCESS)
 								.setTitle("马上就好啦")

@@ -92,8 +92,6 @@ public class UserApi {
 			return;
 		}
 
-		Logger.w(params.get("password") + "");
-
 		netUtil.post(timestamp, Local.BASE_URL_USER + Local.GET_LOGIN, params, callback);
 	}
 

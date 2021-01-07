@@ -2,6 +2,7 @@ package com.xz.todolist.utils;
 
 import android.content.Context;
 
+import com.xz.todolist.network.StatusEnum;
 import com.xz.todolist.widget.TipsDialog;
 
 /**
@@ -48,6 +49,32 @@ public class TipsDialogUtil {
 				.setTitle("Emmm...异常")
 				.setContent("系统异常")
 				.setSubmitText("那就稍后再试吧")
+				.build()
+				.show();
+	}
+
+	/**
+	 * 接口数据解析异常
+	 */
+	public static void serverErrorDialog(Context context) {
+		new TipsDialog.Builder(context)
+				.setType(TipsDialog.STYLE_ERROR)
+				.setTitle("Emmm...")
+				.setContent("服务器放飞自我了，请稍后再试吧")
+				.setSubmitText("那好吧！")
+				.build()
+				.show();
+	}
+
+	/**
+	 * 通用对话框
+	 */
+	public static void commonDialog(Context context, String text) {
+		new TipsDialog.Builder(context)
+				.setType(TipsDialog.STYLE_WARN)
+				.setTitle("Σ(っ °Д °;)っ")
+				.setContent(text)
+				.setSubmitText("让我想想")
 				.build()
 				.show();
 	}
