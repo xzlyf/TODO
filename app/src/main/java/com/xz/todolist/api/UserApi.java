@@ -53,6 +53,13 @@ public class UserApi {
 	}
 
 	/**
+	 * 获取用户条例地址
+	 */
+	public void getUserRules() {
+
+	}
+
+	/**
 	 * 手机注册
 	 */
 	public void phoneRegister(String phone, String pwd, NetUtil.ResultCallback<String> callback) {

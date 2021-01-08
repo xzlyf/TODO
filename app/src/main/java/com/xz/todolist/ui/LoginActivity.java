@@ -1,8 +1,7 @@
 package com.xz.todolist.ui;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
-import android.os.SystemClock;
 import android.text.Html;
 import android.view.View;
 import android.widget.CheckBox;
@@ -13,8 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.alibaba.fastjson.JSON;
-import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.api.UserApi;
 import com.xz.todolist.base.BaseActivity;
@@ -133,7 +130,7 @@ public class LoginActivity extends BaseActivity {
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_protocol:
-				sToast("用户协议...");
+				startActivity(new Intent(mContext, WebActivity.class));
 				break;
 			case R.id.tv_login:
 				showFragment(loginFragment);
