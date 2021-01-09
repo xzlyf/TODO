@@ -98,6 +98,7 @@ public class WebActivity extends AppCompatActivity {
 
 		//待完成====封装成工具
 		webView.loadUrl("https://192.168.1.66/privacy");
+		//webView.loadUrl("https://192.168.1.66/privacy");
 		//webView.loadUrl("https://www.bilibili.com/");
 
 
