@@ -130,7 +130,9 @@ public class LoginActivity extends BaseActivity {
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.tv_protocol:
-				startActivity(new Intent(mContext, WebActivity.class));
+				startActivity(
+						new Intent(mContext, WebActivity.class)
+								.putExtra("url","https://www.baidu.com"));
 				break;
 			case R.id.tv_login:
 				showFragment(loginFragment);

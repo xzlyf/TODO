@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,12 +27,16 @@ public class WebActivity extends AppCompatActivity {
 
 	private Toolbar toolbar;
 	private WebView webView;
+	private String url;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_web);
 		ButterKnife.bind(this);
+		if (getIntent() != null) {
+			url = getIntent().getStringExtra("url");
+		}
 		initView();
 	}
 
@@ -51,7 +57,14 @@ public class WebActivity extends AppCompatActivity {
 		});
 		//===========webview=============
 		WebSettings webSettings = webView.getSettings();
-		webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //设置缓存
+		/*
+		LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据。
+		LOAD_DEFAULT: 根据cache-control决定是否从网络上取数据。
+		LOAD_CACHE_NORMAL: API level 17中已经废弃，从API level 11开始作用同LOAD_DEFAULT模式
+		LOAD_NO_CACHE: 不使用缓存，只从网络获取数据。
+		LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。本地没有缓存时才从网络上获取。
+		 */
+		webSettings.setCacheMode(WebSettings.LOAD_DEFAULT); //设置缓存
 		webSettings.setJavaScriptEnabled(true);//设置能够解析Javascript
 		webSettings.setDomStorageEnabled(true);//设置适应Html5
 		webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
@@ -78,6 +91,26 @@ public class WebActivity extends AppCompatActivity {
 				handler.proceed();    //  忽略SSL证书错误，继续加载页面
 				// handler.cancel();      //停止加载问题页面
 			}
+
+			//加载完成
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+
+			}
+
+			//加载失败
+			@Override
+			public void onReceivedError(WebView view, int errorCode,
+			                            String description, String failingUrl) {
+				super.onReceivedError(view, errorCode, description, failingUrl);
+			}
+
+			//加载失败
+			@Override
+			public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+				super.onReceivedHttpError(view, request, errorResponse);
+			}
 		});
 		webView.setWebChromeClient(new WebChromeClient() {
 			//加载进度
@@ -93,13 +126,11 @@ public class WebActivity extends AppCompatActivity {
 				setTitle(title);
 			}
 
+
 		});
 
 
-		//待完成====封装成工具
-		webView.loadUrl("https://192.168.1.66/privacy");
-		//webView.loadUrl("https://192.168.1.66/privacy");
-		//webView.loadUrl("https://www.bilibili.com/");
+		webView.loadUrl(url);
 
 
 	}
