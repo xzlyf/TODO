@@ -279,7 +279,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 	}
 
 	/**
-	 * 隐藏状态栏
+	 * 隐藏标题栏
 	 */
 	protected void hideActionBar() {
 		ActionBar actionBar = getSupportActionBar();
@@ -289,7 +289,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 	}
 
 	/**
-	 * 显示状态栏
+	 * 显示标题栏
 	 */
 	protected void showActionBar() {
 		ActionBar actionBar = getSupportActionBar();
@@ -299,7 +299,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 	}
 
 	/**
-	 * 设置状态栏颜色
+	 * 设置标题栏颜色
 	 */
 	protected void setActionBarColor(int color) {
 		ActionBar actionBar = getSupportActionBar();
@@ -309,7 +309,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 	}
 
 	/**
-	 * 设置状态栏标题颜色
+	 * 设置标题栏标题颜色
 	 * 基于html原理实现
 	 */
 	protected void setActionBarTitleColor(int color) {
