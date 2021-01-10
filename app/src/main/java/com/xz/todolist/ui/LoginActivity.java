@@ -132,7 +132,7 @@ public class LoginActivity extends BaseActivity {
 			case R.id.tv_protocol:
 				startActivity(
 						new Intent(mContext, WebActivity.class)
-								.putExtra("url","https://www.baidu.com"));
+								.putExtra("url","https://192.168.1.66/privacy"));
 				break;
 			case R.id.tv_login:
 				showFragment(loginFragment);

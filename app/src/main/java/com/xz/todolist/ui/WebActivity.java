@@ -104,6 +104,7 @@ public class WebActivity extends AppCompatActivity {
 			public void onReceivedError(WebView view, int errorCode,
 			                            String description, String failingUrl) {
 				super.onReceivedError(view, errorCode, description, failingUrl);
+				webView.setVisibility(View.GONE);
 			}
 
 			//加载失败
@@ -117,7 +118,6 @@ public class WebActivity extends AppCompatActivity {
 			@Override
 			public void onProgressChanged(WebView view, int newProgress) {
 				//get the newProgress and refresh progress bar
-				Logger.w("加载进度：" + newProgress);
 			}
 
 			//获取网页标题
