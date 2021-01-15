@@ -34,5 +34,6 @@ public class MainActivity extends BaseActivity {
 		startActivity(
 				new Intent(MainActivity.this,
 						LoginActivity.class));
+
 	}
 }
