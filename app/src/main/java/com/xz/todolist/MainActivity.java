@@ -77,6 +77,7 @@ public class MainActivity extends BaseActivity {
 	private void test() {
 		List<Event> list = new ArrayList<>();
 		Event event = new Event();
+		event.setShortTitle("什么是安卓手机思考");
 		event.setContent("安卓手机指的是有Android这个操作系统的手机 \nAndroid是一种以Linux为基础的开放源代码操作系统,主要使用于便携设备。目前尚未有统一中文名称,中国大陆地区较多人使用“安卓”或“安致”。Android操作系统最初由Andy Rubin开发,最初主要支持手机");
 		event.setDone(false);
 		event.setRemindTime(new Date(1610887344000L));

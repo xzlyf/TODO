@@ -17,7 +17,7 @@ public class Local {
 			Manifest.permission.READ_EXTERNAL_STORAGE,
 	};
 
-	public static String SERVER = "https://192.168.1.66";//本地tomcat
+	public static String SERVER = "https://192.168.0.66";//本地tomcat
 	//public static String SERVER = "https://192.168.1.66";//IDEA spring boot 测试
 	//public static String SERVER = "https://106.55.150.181";//腾讯云
 	//public static String SERVER = "https://www.xzlyf.top";//域名访问 已有证书  默认端口：443 不用写
