@@ -3,6 +3,8 @@ package com.xz.todolist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,10 +23,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static java.lang.String.format;
+
 public class MainActivity extends BaseActivity {
 
 	@BindView(R.id.recycle_event)
 	RecyclerView recycleEvent;
+	@BindView(R.id.tv_todo)
+	TextView tvTodo;
+	@BindView(R.id.tv_undone)
+	TextView tvUndone;
+	@BindView(R.id.icon_tips)
+	ImageView iconTips;
 
 	private EventAdapter eventAdapter;
 
@@ -74,9 +84,8 @@ public class MainActivity extends BaseActivity {
 		event4.setShortTitle("小米");
 		event4.setContent("小米科技有限责任公司成立于2010年3月3日 [1]  ，是一家专注于智能硬件和电子产品研发的全球化移动互联网企业 [2]  ，同时也是一家专注于高端智能手机、互联网电视及智能家居生态链建设的创新型科技企业。 [3]  小米公司创造了用互联网模式开发手机操作系统、发烧友参与开发改进的模式。2018年7月9日在香港交易所主板挂牌上市，成为港交所上市制度改革后首家采用不同投票权架构的上市企业。");
 		list.add(event4);
-		eventAdapter.refresh(list);
 
-
+		refresh(list);
 	}
 
 	private void initRecycler() {
@@ -99,7 +108,22 @@ public class MainActivity extends BaseActivity {
 
 	}
 
+	/**
+	 * 更新事件列表，同时刷新还有几件事的控件
+	 */
+	private void refresh(List<Event> list) {
+		eventAdapter.refresh(list);
+		if (list == null || list.size() == 0) {
+			tvUndone.setText("");
+			iconTips.setVisibility(View.INVISIBLE);
+		} else {
+			tvUndone.setText(format("还有%s件事情未完成", list.size()));
+			iconTips.setVisibility(View.VISIBLE);
+		}
+	}
+
 	private void loginActivity() {
+
 		startActivity(
 				new Intent(MainActivity.this,
 						LoginActivity.class));

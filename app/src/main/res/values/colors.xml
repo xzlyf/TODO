@@ -7,7 +7,6 @@
     <color name="colorError">#D84E44</color>
 
 
-
     <color name="triangle">#aa72d572</color>
     <color name="circle">#aa738ffe</color>
     <color name="rect">#aae84e40</color>
@@ -23,7 +22,7 @@
     <color name="green_5">#8fbc8f</color>
     <color name="green_6">#369854</color>
     <color name="green_10">#1D6734</color>
-    
+
     <color name="yellow_5">#FFC107</color>
     <color name="yellow_6">#D8A407</color>
     <color name="yellow_10">#9F7511</color>
@@ -34,6 +33,9 @@
     <color name="gray_1">#ECECEC</color>
     <color name="gray_6">#707070</color>
     <color name="gray_8">#5A5A5A</color>
+
+    <color name="black_7">#3E3E3E</color>
+    <color name="black_10">#000000</color>
 
     <color name="white">#ffffff</color><!--白色 -->
     <color name="ivory">#fffff0</color><!--象牙色 -->
@@ -180,5 +182,4 @@
     <color name="mediumblue">#0000cd</color><!--中兰色 -->
     <color name="darkblue">#00008b</color><!--暗蓝色 -->
     <color name="navy">#000080</color><!--海军色 -->
-    <color name="black">#000000</color><!--黑色 -->
 </resources>
