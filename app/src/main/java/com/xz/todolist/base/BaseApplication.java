@@ -24,12 +24,16 @@ public class BaseApplication extends Application {
         instance = this;
         initLog();
         PreferencesUtilV2.initPreferencesUtils(this, "my_app");
-        //开启奔溃日志处理保存
-        CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init(getApplicationContext());
-
+        //initCrash();
     }
 
+    /**
+     * 崩溃日志捕捉
+     */
+    private void initCrash() {
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+    }
 
 
     /**
