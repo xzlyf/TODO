@@ -3,17 +3,22 @@ package com.xz.todolist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xz.todolist.adapter.EventAdapter;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.base.OnItemClickListener;
 import com.xz.todolist.entity.Event;
 import com.xz.todolist.ui.LoginActivity;
+import com.xz.todolist.utils.ScreenUtil;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 
 import java.util.ArrayList;
@@ -22,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static java.lang.String.format;
 
@@ -35,6 +41,16 @@ public class MainActivity extends BaseActivity {
 	TextView tvUndone;
 	@BindView(R.id.icon_tips)
 	ImageView iconTips;
+	@BindView(R.id.icon_add)
+	ImageView iconAdd;
+	@BindView(R.id.tv_add)
+	TextView tvAdd;
+	@BindView(R.id.fab_add)
+	FloatingActionButton fabAdd;
+	@BindView(R.id.fab_top)
+	FloatingActionButton fabTop;
+	@BindView(R.id.scrollview)
+	NestedScrollView scrollview;
 
 	private EventAdapter eventAdapter;
 
@@ -52,14 +68,15 @@ public class MainActivity extends BaseActivity {
 	public void initData() {
 		hideActionBar();
 		changeStatusBarTextColor();
+		initView();
 		initRecycler();
 		test();
 	}
 
+
 	private void test() {
 		List<Event> list = new ArrayList<>();
 		Event event = new Event();
-		event.setShortTitle("关于明天吃啥提议");
 		event.setContent("安卓手机指的是有Android这个操作系统的手机 \nAndroid是一种以Linux为基础的开放源代码操作系统,主要使用于便携设备。目前尚未有统一中文名称,中国大陆地区较多人使用“安卓”或“安致”。Android操作系统最初由Andy Rubin开发,最初主要支持手机");
 		event.setDone(false);
 		event.setRemindTime(new Date(1610887344000L));
@@ -84,9 +101,22 @@ public class MainActivity extends BaseActivity {
 		event4.setShortTitle("小米");
 		event4.setContent("小米科技有限责任公司成立于2010年3月3日 [1]  ，是一家专注于智能硬件和电子产品研发的全球化移动互联网企业 [2]  ，同时也是一家专注于高端智能手机、互联网电视及智能家居生态链建设的创新型科技企业。 [3]  小米公司创造了用互联网模式开发手机操作系统、发烧友参与开发改进的模式。2018年7月9日在香港交易所主板挂牌上市，成为港交所上市制度改革后首家采用不同投票权架构的上市企业。");
 		list.add(event4);
-
+		Event event5 = new Event();
+		event5.setShortTitle("魅族");
+		event5.setContent("魅族不错");
+		list.add(event5);
+		Event event6 = new Event();
+		event6.setShortTitle("一加");
+		event6.setContent("一加更好了\n对的");
+		list.add(event6);
 		refresh(list);
 	}
+
+	private void initView() {
+		fabAdd.hide();
+		fabTop.hide();
+	}
+
 
 	private void initRecycler() {
 		eventAdapter = new EventAdapter(mContext);
@@ -104,8 +134,29 @@ public class MainActivity extends BaseActivity {
 
 			}
 		});
+		recycleEvent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+				super.onScrollStateChanged(recyclerView, newState);
+				showOrHideFab();
+			}
+		});
+
+	}
 
 
+	@OnClick({R.id.fab_add, R.id.fab_top, R.id.icon_add})
+	public void onViewClick(View view) {
+		switch (view.getId()) {
+			case R.id.fab_add:
+				break;
+			case R.id.fab_top:
+				scrollview.scrollTo(0, 0);
+				showOrHideFab();
+				break;
+			case R.id.icon_add:
+				break;
+		}
 	}
 
 	/**
@@ -122,6 +173,29 @@ public class MainActivity extends BaseActivity {
 		}
 	}
 
+	/**
+	 * 显示或隐藏浮动按钮
+	 */
+	private void showOrHideFab() {
+		if (ScreenUtil.isOnTheScreen(MainActivity.this, tvAdd)) {
+			//add控件在显示，不显示浮动按钮
+			if (fabAdd.isShown()) {
+				fabAdd.hide();
+				fabTop.hide();
+				fabAdd.setAnimation(AnimationUtils.makeOutAnimation(mContext, true));
+				fabTop.setAnimation(AnimationUtils.makeOutAnimation(mContext, true));
+			}
+		} else {
+			//add控件已被划过不在屏幕范围内，显示浮动按钮
+			if (!fabAdd.isShown()) {
+				fabAdd.show();
+				fabTop.show();
+				fabAdd.setAnimation(AnimationUtils.makeInAnimation(mContext, false));
+				fabTop.setAnimation(AnimationUtils.makeInAnimation(mContext, false));
+			}
+		}
+	}
+
 	private void loginActivity() {
 
 		startActivity(
@@ -129,4 +203,10 @@ public class MainActivity extends BaseActivity {
 						LoginActivity.class));
 	}
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// TODO: add setContentView(...) invocation
+		ButterKnife.bind(this);
+	}
 }
