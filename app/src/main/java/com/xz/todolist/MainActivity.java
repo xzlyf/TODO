@@ -25,15 +25,14 @@ public class MainActivity extends BaseActivity {
 
 	@Override
 	public void initData() {
-	    hideActionBar();
-        changeStatusBarTextColor();
+		hideActionBar();
+		changeStatusBarTextColor();
 
 	}
 
-	public void test(View view) {
+	private void loginActivity() {
 		startActivity(
 				new Intent(MainActivity.this,
 						LoginActivity.class));
-
 	}
 }
