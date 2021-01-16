@@ -114,7 +114,7 @@ public class MainActivity extends BaseActivity {
 	private void refresh(List<Event> list) {
 		eventAdapter.refresh(list);
 		if (list == null || list.size() == 0) {
-			tvUndone.setText("");
+			tvUndone.setText("暂无待办事件");
 			iconTips.setVisibility(View.INVISIBLE);
 		} else {
 			tvUndone.setText(format("还有%s件事情未完成", list.size()));
