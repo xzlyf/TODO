@@ -233,8 +233,12 @@ public class MainActivity extends BaseActivity {
 			public void onResponse(ApiResult<List<Event>> response) {
 				if (response.getCode() == 2) {
 					//登录过期了
+					sToast("登录已过期");
+					loginActivity();
+					finish();
 				} else if (response.getCode() == -1) {
 					//未知错误
+					TipsDialogUtil.errorDialog(mContext);
 				} else if (response.getCode() == 1) {
 					//成功
 					refresh(response.getData());
