@@ -6,18 +6,18 @@ import java.io.Serializable;
  * @Author: xz
  * @Date: 2020/11/22
  * <p>
- * 分页结果实体数据返回
+ * 1.0 服务端分页返回实体标准
  */
 public class PagingResult<T> extends ApiResult<T> implements Serializable {
     private static final long serialVersionUID = 2L;
 
     /**
-     * 每页大小
+     * 当前页为第几页
      */
     private int page;
 
     /**
-     * 当前页为第几页
+     * 每页大小
      */
     private int size;
 

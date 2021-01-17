@@ -41,7 +41,7 @@ public class TodoApi {
 	 * @param token 用户token
 	 * @param done  true /false已完成或未完成
 	 */
-	public void getEvent(String token, boolean done, int page, int size, NetUtil.ResultCallback<ApiResult<List<Event>>> callback) {
+	public void getEvent(String token, boolean done, int page, int size, NetUtil.ResultCallback<PagingResult<List<Event>>> callback) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("token", token);
 		params.put("done", done);

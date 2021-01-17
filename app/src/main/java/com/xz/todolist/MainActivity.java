@@ -72,6 +72,9 @@ public class MainActivity extends BaseActivity {
 	private EventAdapter eventAdapter;
 
 	private TodoApi todoApi;
+	//分页控制
+	private int size = 50;
+	private int page = 1;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -90,7 +93,7 @@ public class MainActivity extends BaseActivity {
 		initView();
 		todoApi = TodoApi.getInstance();
 		initRecycler();
-		getEvent();
+		getEvent(false);
 
 	}
 
@@ -218,11 +221,12 @@ public class MainActivity extends BaseActivity {
 		}
 	}
 
+
 	/**
 	 * 获取事件数据
 	 */
-	private void getEvent() {
-		todoApi.getEvent(Local.token, false, 1, 50, new NetUtil.ResultCallback<ApiResult<List<Event>>>() {
+	private void getEvent(boolean isDone) {
+		todoApi.getEvent(Local.token, isDone, page, size, new NetUtil.ResultCallback<PagingResult<List<Event>>>() {
 			@Override
 			public void onError(Request request, Exception e) {
 				e.printStackTrace();
@@ -230,7 +234,7 @@ public class MainActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onResponse(ApiResult<List<Event>> response) {
+			public void onResponse(PagingResult<List<Event>> response) {
 				if (response.getCode() == 2) {
 					//登录过期了
 					sToast("登录已过期");
