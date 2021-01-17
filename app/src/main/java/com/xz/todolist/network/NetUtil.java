@@ -343,7 +343,16 @@ public class NetUtil {
 	}
 
 	/**
-	 * 通用GET请求格式
+	 * 通用GET请求
+	 */
+	private Request buildGetCommonRequest(String url, Map<String, Object> params) {
+		return new Request.Builder()
+				.url(attachHttpGetParams(url, params, true))
+				.build();
+	}
+
+	/**
+	 * 携带部分头部数据的GET请求格式
 	 */
 	private Request buildGetRequest(long timestamp, String url, Map<String, Object> params) {
 		return new Request.Builder()
@@ -356,7 +365,7 @@ public class NetUtil {
 	}
 
 	/**
-	 * 通用POST请求格式
+	 * 携带部分头部数据的POST请求格式
 	 */
 	private Request buildPostRequest(long timestamp, String url, Map<String, Object> params) {
 		if (params == null) {
@@ -395,6 +404,7 @@ public class NetUtil {
 		Request request = buildPostRequest(timestamp, url, params);
 		deliveryRequest(request, callback);
 	}
+
 
 
 }

@@ -31,8 +31,9 @@ public class Local {
 	public static String BASE_URL_INFO = Local.SERVER + Local.alt_appinfo;
 
 	//接口
-	public static final String GET_REGISTER = "/registerUser";
-	public static final String GET_LOGIN = "/login";
+	public static final String GET_REGISTER = "/registerUser";//注册
+	public static final String GET_LOGIN = "/login";//登录
+	public static final String GET_EVENT = "/getDoneEvent";//获取事件
 
 	public static String appId = "4MakRN8juW8c6Hii4lTl0rt84JDH22c9";
 	public static String appSecret = "OoLZs7vHPEPsr9YtZtnLY7My2W2RiwTk";
@@ -43,5 +44,5 @@ public class Local {
 	public static final String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt5OvgZD9ZuncevvfIMeJU0AiDK01bnMoL9BUhHrf5netVR_ZZ3xNhSDZFlA-wfHiiMMZnUqxsQPBKs8J-zwff-yaYTdg3pvHgsfSePH-_ZIo_bH3meO-_s6l2F0Qqp4pXP7P7lGAI73rYfEAfKiwK79c042PMQdOLYGGnMsB6RwIDAQAB";
 
 	//用户token
-	public static String token;
+	public static String token ="CDCBFBF02B9E9335FE203E92944B9DB3";
 }

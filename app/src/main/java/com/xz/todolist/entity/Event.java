@@ -35,6 +35,16 @@ public class Event {
 	 */
 	private Date remindTime;
 
+	/**
+	 * 创建事件
+	 */
+	private Date createTime;
+
+	/**
+	 * 最后一次更新时间
+	 */
+	private Date updateTime;
+
 	public String getId() {
 		return id;
 	}
