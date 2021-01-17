@@ -1,11 +1,13 @@
 package com.xz.todolist.api;
 
 import com.xz.todolist.content.Local;
+import com.xz.todolist.entity.ApiResult;
 import com.xz.todolist.entity.Event;
 import com.xz.todolist.entity.PagingResult;
 import com.xz.todolist.network.NetUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +41,7 @@ public class TodoApi {
 	 * @param token 用户token
 	 * @param done  true /false已完成或未完成
 	 */
-	public void getEvent(String token, boolean done, int page, int size, NetUtil.ResultCallback<String> callback) {
+	public void getEvent(String token, boolean done, int page, int size, NetUtil.ResultCallback<ApiResult<List<Event>>> callback) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("token", token);
 		params.put("done", done);

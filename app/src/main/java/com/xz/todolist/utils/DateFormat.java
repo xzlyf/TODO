@@ -10,6 +10,7 @@ public class DateFormat {
 	 * 年月日 时分秒（24小时）
 	 */
 	public static final String STANDARD = "yyyy年MM月dd日 HH:mm:ss";
+	public static final String STANDARD_EN = "yyyy-MM-dd HH:mm:ss";
 	/**
 	 * 年月日 时分（24小时）
 	 */

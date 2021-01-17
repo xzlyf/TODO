@@ -4,12 +4,13 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.internal.$Gson$Types;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.base.BaseApplication;
 import com.xz.todolist.content.Local;
-import com.xz.todolist.utils.RSAUtil;
+import com.xz.todolist.utils.DateFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,10 +19,8 @@ import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -78,7 +76,9 @@ public class NetUtil {
 
 		mOkHttpClient = okHttpBuilder.build();
 		mDelivery = new Handler(Looper.getMainLooper());
-		mGson = new Gson();
+		mGson = new GsonBuilder()
+				.setDateFormat(DateFormat.STANDARD_EN)//gson解析date类型，这里的date类型对应服务器的yyyy-MM-dd HH:mm:ss
+				.create();
 	}
 
 	public static NetUtil getInstance() {
@@ -404,7 +404,6 @@ public class NetUtil {
 		Request request = buildPostRequest(timestamp, url, params);
 		deliveryRequest(request, callback);
 	}
-
 
 
 }

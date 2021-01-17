@@ -13,16 +13,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.adapter.EventAdapter;
 import com.xz.todolist.api.TodoApi;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.base.OnItemClickListener;
 import com.xz.todolist.content.Local;
+import com.xz.todolist.entity.ApiResult;
 import com.xz.todolist.entity.Event;
 import com.xz.todolist.entity.PagingResult;
 import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.ui.LoginActivity;
+import com.xz.todolist.utils.DateFormat;
 import com.xz.todolist.utils.ScreenUtil;
 import com.xz.todolist.utils.TipsDialogUtil;
 import com.xz.todolist.widget.TipsDialog;
@@ -31,6 +36,7 @@ import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -216,7 +222,7 @@ public class MainActivity extends BaseActivity {
 	 * 获取事件数据
 	 */
 	private void getEvent() {
-		todoApi.getEvent(Local.token, false, 1, 50, new NetUtil.ResultCallback<String>() {
+		todoApi.getEvent(Local.token, false, 1, 50, new NetUtil.ResultCallback<ApiResult<List<Event>>>() {
 			@Override
 			public void onError(Request request, Exception e) {
 				e.printStackTrace();
@@ -224,16 +230,34 @@ public class MainActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onResponse(String response) {
-
-				try {
-					JSONObject obj = new JSONObject(response);
-					// TODO: 2021/1/17  尝试使用gson在netUtil中解析数据  PagingResult 和 Apiresult标准
-				} catch (JSONException e) {
-					e.printStackTrace();
+			public void onResponse(ApiResult<List<Event>> response) {
+				if (response.getCode() == 2) {
+					//登录过期了
+				} else if (response.getCode() == -1) {
+					//未知错误
+				} else if (response.getCode() == 1) {
+					//成功
+					refresh(response.getData());
 				}
-
 			}
+
+			//@Override
+			//public void onResponse(String response) {
+			//Logger.w(response);
+			//try {
+			//	Gson gson = new GsonBuilder()
+			//			.setDateFormat(DateFormat.STANDARD_EN)
+			//			.create();
+			//	JSONObject obj = new JSONObject(response);
+			//	Type type = new TypeToken<ApiResult<List<Event>>>() {
+			//	}.getType();
+			//	ApiResult<List<Event>> entity = gson.fromJson(response, type);
+			//	Logger.w(entity.getData().get(0).getShortTitle());
+			//} catch (JSONException e) {
+			//	e.printStackTrace();
+			//}
+
+			//}
 
 
 		});

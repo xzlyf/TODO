@@ -8,6 +8,8 @@ public class ApiResult<T> {
 	private String status;
 	private T data;
 
+
+
 	public int getCode() {
 		return code;
 	}
