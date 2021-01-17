@@ -2,9 +2,12 @@ package com.xz.todolist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -140,6 +143,15 @@ public class MainActivity extends BaseActivity {
 	private void initView() {
 		fabAdd.hide();
 		fabTop.hide();
+		scrollview.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+			@Override
+			public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+				Log.d(TAG, "onScrollChange: "+scrollY);
+
+
+
+			}
+		});
 	}
 
 

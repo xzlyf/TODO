@@ -11,6 +11,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
+        android:overScrollMode="never"
         android:layout_height="match_parent">
 
         <LinearLayout
