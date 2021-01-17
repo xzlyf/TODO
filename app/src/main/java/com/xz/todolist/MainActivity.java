@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity {
 		initView();
 		todoApi = TodoApi.getInstance();
 		initRecycler();
-		getEvent(false);
+		getEvent(false, true);
 
 	}
 
@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity {
 		event6.setShortTitle("一加");
 		event6.setContent("一加更好了\n对的");
 		list.add(event6);
-		refresh(list);
+		refresh(list,true);
 	}
 
 	private void initView() {
@@ -146,8 +146,7 @@ public class MainActivity extends BaseActivity {
 		scrollview.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 			@Override
 			public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-				Log.d(TAG, "onScrollChange: "+scrollY);
-
+				Log.d(TAG, "onScrollChange: " + scrollY);
 
 
 			}
@@ -198,9 +197,15 @@ public class MainActivity extends BaseActivity {
 
 	/**
 	 * 更新事件列表，同时刷新还有几件事的控件
+	 *
+	 * @param isClean 是否需要清空之前的列表数据
 	 */
-	private void refresh(List<Event> list) {
-		eventAdapter.refresh(list);
+	private void refresh(List<Event> list, boolean isClean) {
+		if (isClean) {
+			eventAdapter.superRefresh(list);
+		} else {
+			eventAdapter.refresh(list);
+		}
 		if (list == null || list.size() == 0) {
 			tvUndone.setText("暂无待办事件");
 			iconTips.setVisibility(View.INVISIBLE);
@@ -237,7 +242,7 @@ public class MainActivity extends BaseActivity {
 	/**
 	 * 获取事件数据
 	 */
-	private void getEvent(boolean isDone) {
+	private void getEvent(boolean isDone, boolean isClean) {
 		todoApi.getEvent(Local.token, isDone, page, size, new NetUtil.ResultCallback<PagingResult<List<Event>>>() {
 			@Override
 			public void onError(Request request, Exception e) {
@@ -257,7 +262,7 @@ public class MainActivity extends BaseActivity {
 					TipsDialogUtil.errorDialog(mContext);
 				} else if (response.getCode() == 1) {
 					//成功
-					refresh(response.getData());
+					refresh(response.getData(), isClean);
 				}
 			}
 
