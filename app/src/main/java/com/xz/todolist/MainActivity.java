@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity {
 	private int size = 50;
 	private int page = 1;
 	private int totalPages;
-
+	private long totalElements;
 	@Override
 	public boolean homeAsUpEnabled() {
 		return true;
@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity {
 			tvUndone.setText("暂无待办事件");
 			iconTips.setVisibility(View.INVISIBLE);
 		} else {
-			tvUndone.setText(format("还有%s件事情未完成", list.size()));
+			tvUndone.setText(format("还有%s件事情未完成", totalElements));
 			iconTips.setVisibility(View.VISIBLE);
 		}
 	}
@@ -281,6 +281,7 @@ public class MainActivity extends BaseActivity {
 				} else if (response.getCode() == 1) {
 					//成功
 					totalPages = response.getTotalPages();
+					totalElements = response.getTotalElements();
 					refresh(response.getData(), isClean);
 				}
 			}
