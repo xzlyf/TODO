@@ -156,6 +156,7 @@ public class MainActivity extends BaseActivity {
 
 	private void initRecycler() {
 		eventAdapter = new EventAdapter(mContext);
+
 		recycleEvent.setLayoutManager(new LinearLayoutManager(mContext));
 		recycleEvent.addItemDecoration(new SpacesItemDecorationUtil.SpacesItemDecorationVertical(20));
 		recycleEvent.setAdapter(eventAdapter);
