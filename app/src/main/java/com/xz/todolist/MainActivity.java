@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity {
 		event6.setShortTitle("一加");
 		event6.setContent("一加更好了\n对的");
 		list.add(event6);
-		refresh(list,true);
+		refresh(list, true);
 	}
 
 	private void initView() {
@@ -148,6 +148,7 @@ public class MainActivity extends BaseActivity {
 			public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 				Log.d(TAG, "onScrollChange: " + scrollY);
 
+				showOrHideFab();
 
 			}
 		});
@@ -156,29 +157,20 @@ public class MainActivity extends BaseActivity {
 
 	private void initRecycler() {
 		eventAdapter = new EventAdapter(mContext);
-
 		recycleEvent.setLayoutManager(new LinearLayoutManager(mContext));
 		recycleEvent.addItemDecoration(new SpacesItemDecorationUtil.SpacesItemDecorationVertical(20));
 		recycleEvent.setAdapter(eventAdapter);
 		eventAdapter.setOnItemClickListener(new OnItemClickListener<Event>() {
 			@Override
 			public void onItemClick(View view, int position, Event model) {
-
+				sToast("点击");
 			}
 
 			@Override
 			public void onItemLongClick(View view, int position, Event model) {
-
+				sToast("长按");
 			}
 		});
-		recycleEvent.addOnScrollListener(new RecyclerView.OnScrollListener() {
-			@Override
-			public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-				super.onScrollStateChanged(recyclerView, newState);
-				showOrHideFab();
-			}
-		});
-
 	}
 
 
