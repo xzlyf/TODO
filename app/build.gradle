@@ -60,4 +60,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
     //经过修改的apache codes包，因为Base64会与安卓的Base64冲突，这个包修改了包名
     implementation files('libs/commons-codes-android-1.15.jar')
+    //下拉刷新 github:https://github.com/lcodecorex/TwinklingRefreshLayout/blob/master/README_CN.md
+    implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
 }

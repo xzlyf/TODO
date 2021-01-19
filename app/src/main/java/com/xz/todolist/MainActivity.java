@@ -4,42 +4,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.orhanobut.logger.Logger;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.footer.LoadingView;
+import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
 import com.xz.todolist.adapter.EventAdapter;
 import com.xz.todolist.api.TodoApi;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.base.OnItemClickListener;
 import com.xz.todolist.content.Local;
-import com.xz.todolist.entity.ApiResult;
 import com.xz.todolist.entity.Event;
 import com.xz.todolist.entity.PagingResult;
 import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.ui.LoginActivity;
-import com.xz.todolist.utils.DateFormat;
 import com.xz.todolist.utils.ScreenUtil;
 import com.xz.todolist.utils.TipsDialogUtil;
-import com.xz.todolist.widget.TipsDialog;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +61,8 @@ public class MainActivity extends BaseActivity {
 	FloatingActionButton fabTop;
 	@BindView(R.id.scrollview)
 	NestedScrollView scrollview;
+	@BindView(R.id.refresh_layout)
+	TwinklingRefreshLayout refreshLayout;
 
 	private EventAdapter eventAdapter;
 
@@ -78,6 +70,7 @@ public class MainActivity extends BaseActivity {
 	//分页控制
 	private int size = 50;
 	private int page = 1;
+	private int totalPages;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -96,6 +89,7 @@ public class MainActivity extends BaseActivity {
 		initView();
 		todoApi = TodoApi.getInstance();
 		initRecycler();
+		refreshLayout.startRefresh();
 		getEvent(false, true);
 
 	}
@@ -146,11 +140,38 @@ public class MainActivity extends BaseActivity {
 		scrollview.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 			@Override
 			public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-				Log.d(TAG, "onScrollChange: " + scrollY);
-
+				//Log.d(TAG, "onScrollChange: " + scrollY);
 				showOrHideFab();
 
 			}
+		});
+		refreshLayout.setHeaderView(new SinaRefreshView(mContext));
+		refreshLayout.setBottomView(new LoadingView(mContext));
+		refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+			@Override
+			public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+				//下拉刷新
+				page = 1;
+				refreshLayout.setEnableLoadmore(true);
+				getEvent(false, true);
+			}
+
+			@Override
+			public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+				//上拉加载
+				if (page >= totalPages) {
+					sToast("已加载全部啦");
+					refreshLayout.finishLoadmore();
+					refreshLayout.setEnableLoadmore(false);
+					return;
+				} else {
+					refreshLayout.setEnableLoadmore(true);
+					page++;
+				}
+				getEvent(false, false);
+
+			}
+
 		});
 	}
 
@@ -240,11 +261,15 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onError(Request request, Exception e) {
 				e.printStackTrace();
+				refreshLayout.finishRefreshing();
+				refreshLayout.finishLoadmore();
 				TipsDialogUtil.badNetDialog(mContext);
 			}
 
 			@Override
 			public void onResponse(PagingResult<List<Event>> response) {
+				refreshLayout.finishRefreshing();
+				refreshLayout.finishLoadmore();
 				if (response.getCode() == 2) {
 					//登录过期了
 					sToast("登录已过期");
@@ -255,6 +280,7 @@ public class MainActivity extends BaseActivity {
 					TipsDialogUtil.errorDialog(mContext);
 				} else if (response.getCode() == 1) {
 					//成功
+					totalPages = response.getTotalPages();
 					refresh(response.getData(), isClean);
 				}
 			}
@@ -289,4 +315,10 @@ public class MainActivity extends BaseActivity {
 						LoginActivity.class));
 	}
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// TODO: add setContentView(...) invocation
+		ButterKnife.bind(this);
+	}
 }
