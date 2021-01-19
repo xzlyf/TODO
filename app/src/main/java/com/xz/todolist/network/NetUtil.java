@@ -230,6 +230,9 @@ public class NetUtil {
 	 * @return
 	 */
 	public static String attachHttpGetParams(String url, Map<String, Object> params, boolean isHavFirst) {
+		if (params == null) {
+			return url;
+		}
 		Iterator<String> keys = params.keySet().iterator();
 		Iterator<Object> values = params.values().iterator();
 		StringBuffer stringBuffer = new StringBuffer();
@@ -392,6 +395,12 @@ public class NetUtil {
 
 	public void get(String url, Map<String, Object> params, ResultCallback callback) {
 		Request request = buildGetRequest(System.currentTimeMillis(), url, params);
+		deliveryRequest(request, callback);
+	}
+
+	//无请求头，适用于第三方接口请求
+	public void get_public(String url, Map<String, Object> params, ResultCallback callback) {
+		Request request = buildGetCommonRequest(url, params);
 		deliveryRequest(request, callback);
 	}
 

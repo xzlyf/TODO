@@ -12,10 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.api.UserApi;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.content.Local;
+import com.xz.todolist.entity.ApiResult;
 import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.network.StatusEnum;
 import com.xz.todolist.ui.fragment.LoginFragment;
@@ -50,6 +52,7 @@ public class LoginActivity extends BaseActivity {
 	private Fragment mContent;
 	private LoginFragment loginFragment;
 	private RegisterFragment registerFragment;
+	private String userRuleUrl;
 
 
 	private UserApi userApi;
@@ -124,6 +127,22 @@ public class LoginActivity extends BaseActivity {
 	 */
 	private void getProtocol() {
 		tvProtocol.setText(Html.fromHtml("《<font color=\"" + ColorUtil.int2Hex(getColor(R.color.colorAccent)) + "\">注册与使用协议</font>》"));
+		userApi.getUserRules(new NetUtil.ResultCallback<ApiResult<String>>() {
+			@Override
+			public void onError(Request request, Exception e) {
+				Logger.e("注册使用协议地址请求错误了：" + e.getMessage());
+			}
+
+			@Override
+			public void onResponse(ApiResult<String> response) {
+				if (response.getCode() == 1) {
+					userRuleUrl = response.getData();
+				} else {
+					Logger.e("错误：" + response.getStatus());
+				}
+			}
+
+		});
 	}
 
 	@OnClick({R.id.tv_protocol, R.id.tv_login, R.id.tv_register, R.id.btn_submit})
@@ -132,7 +151,7 @@ public class LoginActivity extends BaseActivity {
 			case R.id.tv_protocol:
 				startActivity(
 						new Intent(mContext, WebActivity.class)
-								.putExtra("url","https://192.168.1.66/privacy"));
+								.putExtra("url", userRuleUrl));
 				break;
 			case R.id.tv_login:
 				showFragment(loginFragment);

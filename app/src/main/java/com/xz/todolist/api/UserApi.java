@@ -2,6 +2,7 @@ package com.xz.todolist.api;
 
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.content.Local;
+import com.xz.todolist.entity.ApiResult;
 import com.xz.todolist.network.NetUtil;
 import com.xz.todolist.utils.RSAUtil;
 
@@ -54,9 +55,12 @@ public class UserApi {
 
 	/**
 	 * 获取用户条例地址
+	 * @param callback
 	 */
-	public void getUserRules() {
-
+	public void getUserRules(NetUtil.ResultCallback<ApiResult<String>> callback) {
+		Map<String,Object> params = new HashMap<>();
+		params.put("appid",Local.appId);
+		netUtil.get_public(Local.BASE_URL_INFO + Local.GET_USER_RULE, params, callback);
 	}
 
 	/**
