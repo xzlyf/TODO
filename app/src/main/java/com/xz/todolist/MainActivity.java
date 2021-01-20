@@ -2,12 +2,12 @@ package com.xz.todolist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +17,7 @@ import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.LoadingView;
 import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
+import com.orhanobut.logger.Logger;
 import com.xz.todolist.adapter.EventAdapter;
 import com.xz.todolist.api.TodoApi;
 import com.xz.todolist.base.BaseActivity;
@@ -25,10 +26,11 @@ import com.xz.todolist.content.Local;
 import com.xz.todolist.entity.Event;
 import com.xz.todolist.entity.PagingResult;
 import com.xz.todolist.network.NetUtil;
-import com.xz.todolist.ui.LoginActivity;
 import com.xz.todolist.utils.ScreenUtil;
-import com.xz.todolist.utils.TipsDialogUtil;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
+import com.xz.xlogin.LoginActivity;
+import com.xz.xlogin.XLogin;
+import com.xz.xlogin.util.TipsDialogUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +74,7 @@ public class MainActivity extends BaseActivity {
 	private int page = 1;
 	private int totalPages;
 	private long totalElements;
+
 	@Override
 	public boolean homeAsUpEnabled() {
 		return true;
@@ -90,8 +93,6 @@ public class MainActivity extends BaseActivity {
 		todoApi = TodoApi.getInstance();
 		initRecycler();
 		refreshLayout.startRefresh();
-		getEvent(false, true);
-
 	}
 
 
@@ -268,13 +269,13 @@ public class MainActivity extends BaseActivity {
 
 			@Override
 			public void onResponse(PagingResult<List<Event>> response) {
+
 				refreshLayout.finishRefreshing();
 				refreshLayout.finishLoadmore();
 				if (response.getCode() == 2) {
 					//登录过期了
 					sToast("登录已过期");
 					loginActivity();
-					finish();
 				} else if (response.getCode() == -1) {
 					//未知错误
 					TipsDialogUtil.errorDialog(mContext);
@@ -282,7 +283,9 @@ public class MainActivity extends BaseActivity {
 					//成功
 					totalPages = response.getTotalPages();
 					totalElements = response.getTotalElements();
-					refresh(response.getData(), isClean);
+					if (response.getData() != null) {
+						refresh(response.getData(), isClean);
+					}
 				}
 			}
 
@@ -309,17 +312,30 @@ public class MainActivity extends BaseActivity {
 
 	}
 
+	/**
+	 * 打开登录页面
+	 */
 	private void loginActivity() {
-
-		startActivity(
-				new Intent(MainActivity.this,
-						LoginActivity.class));
+		XLogin.login(this);
 	}
 
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// TODO: add setContentView(...) invocation
-		ButterKnife.bind(this);
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == XLogin.REQUEST_CODE) {
+			if (resultCode == RESULT_OK) {
+				if (data == null) {
+					sToast("登录失败，请稍后重试");
+					return;
+				}
+				Local.token = data.getStringExtra(XLogin.EXTRA_TOKEN);
+				//刷新数据列表
+				refreshLayout.startRefresh();
+
+			} else if (resultCode == RESULT_CANCELED) {
+				//登录被终止
+			}
+		}
 	}
 }

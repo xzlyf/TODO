@@ -25,7 +25,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    repositories{
+        flatDir{
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
@@ -40,6 +44,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0-rc01'
     //xzlyf maven仓库
     implementation 'com.github.xzlyf:MyApps:v1.0.3'
+    //统一登陆器
+    implementation 'com.github.xzlyf:LoginProcess:0.0.2'
     //butterknife
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
@@ -58,8 +64,6 @@ dependencies {
     //implementation 'commons-codec:commons-codec:1.15'
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
-    //经过修改的apache codes包，因为Base64会与安卓的Base64冲突，这个包修改了包名
-    implementation files('libs/commons-codes-android-1.15.jar')
     //下拉刷新 github:https://github.com/lcodecorex/TwinklingRefreshLayout/blob/master/README_CN.md
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
 }

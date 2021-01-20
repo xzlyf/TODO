@@ -26,7 +26,7 @@ public class TodoApi {
 
 	public static TodoApi getInstance() {
 		if (instance == null) {
-			synchronized (UserApi.class) {
+			synchronized (TodoApi.class) {
 				if (instance == null) {
 					instance = new TodoApi();
 				}

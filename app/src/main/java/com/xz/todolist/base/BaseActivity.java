@@ -33,10 +33,10 @@ import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.base.utils.ToastUtil;
 import com.xz.todolist.content.Local;
-import com.xz.todolist.utils.ColorUtil;
-import com.xz.todolist.widget.LoadingDialog;
-import com.xz.todolist.widget.TipsDialog;
 import com.xz.utils.appUtils.TransparentBarUtil;
+import com.xz.xlogin.util.ColorUtil;
+import com.xz.xlogin.widget.LoadingDialog;
+import com.xz.xlogin.widget.TipsDialog;
 
 import butterknife.ButterKnife;
 
