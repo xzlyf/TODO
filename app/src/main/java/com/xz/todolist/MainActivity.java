@@ -289,25 +289,6 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 
-			//@Override
-			//public void onResponse(String response) {
-			//Logger.w(response);
-			//try {
-			//	Gson gson = new GsonBuilder()
-			//			.setDateFormat(DateFormat.STANDARD_EN)
-			//			.create();
-			//	JSONObject obj = new JSONObject(response);
-			//	Type type = new TypeToken<ApiResult<List<Event>>>() {
-			//	}.getType();
-			//	ApiResult<List<Event>> entity = gson.fromJson(response, type);
-			//	Logger.w(entity.getData().get(0).getShortTitle());
-			//} catch (JSONException e) {
-			//	e.printStackTrace();
-			//}
-
-			//}
-
-
 		});
 
 	}
