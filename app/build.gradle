@@ -45,7 +45,7 @@ dependencies {
     //xzlyf maven仓库
     implementation 'com.github.xzlyf:MyApps:v1.0.3'
     //统一登陆器
-    implementation 'com.github.xzlyf:LoginProcess:0.0.2'
+    implementation 'com.github.xzlyf:LoginProcess:0.1.0'
     //butterknife
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
