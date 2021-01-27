@@ -22,4 +22,12 @@
     </style>
 
     <style name="NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="customBarImg">
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
 </resources>
