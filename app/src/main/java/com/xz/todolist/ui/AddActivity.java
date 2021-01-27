@@ -1,7 +1,10 @@
 package com.xz.todolist.ui;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.xz.todolist.R;
@@ -20,6 +23,16 @@ public class AddActivity extends BaseActivity {
 	ImageView icClock;
 	@BindView(R.id.ic_done)
 	ImageView icDone;
+	@BindView(R.id.et_short)
+	EditText etShort;
+	@BindView(R.id.ic_bold)
+	ImageView icBold;
+	@BindView(R.id.ic_italic)
+	ImageView icItalic;
+	@BindView(R.id.ic_underline)
+	ImageView icUnderline;
+	@BindView(R.id.ic_strickout)
+	ImageView icStrickout;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -38,10 +51,12 @@ public class AddActivity extends BaseActivity {
 	}
 
 	private void initView() {
+
 	}
 
 
-	@OnClick({R.id.ic_done, R.id.ic_back, R.id.ic_clock})
+	@OnClick({R.id.ic_done, R.id.ic_back, R.id.ic_clock
+			, R.id.ic_bold, R.id.ic_italic, R.id.ic_underline, R.id.ic_strickout})
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.ic_clock:
@@ -50,6 +65,15 @@ public class AddActivity extends BaseActivity {
 			case R.id.ic_done:
 				saveOnExit();
 				break;
+			case R.id.ic_bold://加粗
+				break;
+			case R.id.ic_italic://斜体
+				break;
+			case R.id.ic_underline://下划线
+				break;
+			case R.id.ic_strickout://删除线
+				break;
+
 		}
 	}
 
@@ -61,5 +85,12 @@ public class AddActivity extends BaseActivity {
 
 		finish();
 
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// TODO: add setContentView(...) invocation
+		ButterKnife.bind(this);
 	}
 }
