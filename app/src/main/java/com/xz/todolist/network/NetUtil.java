@@ -350,6 +350,7 @@ public class NetUtil {
 	 */
 	private Request buildGetCommonRequest(String url, Map<String, Object> params) {
 		return new Request.Builder()
+				.addHeader("Connection","close")
 				.url(attachHttpGetParams(url, params, true))
 				.build();
 	}
@@ -359,6 +360,7 @@ public class NetUtil {
 	 */
 	private Request buildGetRequest(long timestamp, String url, Map<String, Object> params) {
 		return new Request.Builder()
+				.addHeader("Connection","close")
 				.addHeader("appid", Local.appId)
 				.addHeader("timestamp", String.valueOf(timestamp))
 				.addHeader("version", Local.version)

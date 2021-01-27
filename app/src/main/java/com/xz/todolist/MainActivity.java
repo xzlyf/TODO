@@ -12,6 +12,9 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -26,6 +29,7 @@ import com.xz.todolist.content.Local;
 import com.xz.todolist.entity.Event;
 import com.xz.todolist.entity.PagingResult;
 import com.xz.todolist.network.NetUtil;
+import com.xz.todolist.ui.AddActivity;
 import com.xz.todolist.utils.ScreenUtil;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 import com.xz.xlogin.LoginActivity;
@@ -89,6 +93,8 @@ public class MainActivity extends BaseActivity {
 	public void initData() {
 		hideActionBar();
 		changeStatusBarTextColor();
+		// TODO: 2021/1/27 XLogin读取token的方法
+		//Local.token = ???
 		initView();
 		todoApi = TodoApi.getInstance();
 		initRecycler();
@@ -141,7 +147,6 @@ public class MainActivity extends BaseActivity {
 		scrollview.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 			@Override
 			public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-				//Log.d(TAG, "onScrollChange: " + scrollY);
 				showOrHideFab();
 
 			}
@@ -199,13 +204,14 @@ public class MainActivity extends BaseActivity {
 	@OnClick({R.id.fab_add, R.id.fab_top, R.id.icon_add})
 	public void onViewClick(View view) {
 		switch (view.getId()) {
-			case R.id.fab_add:
-				break;
+
 			case R.id.fab_top:
 				scrollview.scrollTo(0, 0);
 				showOrHideFab();
 				break;
+			case R.id.fab_add:
 			case R.id.icon_add:
+				startActivity(new Intent(mContext, AddActivity.class));
 				break;
 		}
 	}
@@ -256,6 +262,7 @@ public class MainActivity extends BaseActivity {
 
 	/**
 	 * 获取事件数据
+	 * @param  isDone 完成或未完成的事件
 	 */
 	private void getEvent(boolean isDone, boolean isClean) {
 		todoApi.getEvent(Local.token, isDone, page, size, new NetUtil.ResultCallback<PagingResult<List<Event>>>() {
@@ -269,12 +276,10 @@ public class MainActivity extends BaseActivity {
 
 			@Override
 			public void onResponse(PagingResult<List<Event>> response) {
-
 				refreshLayout.finishRefreshing();
 				refreshLayout.finishLoadmore();
 				if (response.getCode() == 2) {
 					//登录过期了
-					sToast("登录已过期");
 					loginActivity();
 				} else if (response.getCode() == -1) {
 					//未知错误
