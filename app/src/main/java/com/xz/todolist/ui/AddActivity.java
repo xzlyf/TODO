@@ -1,18 +1,27 @@
 package com.xz.todolist.ui;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.xz.todolist.R;
+import com.xz.todolist.adapter.EditFunctionAdapter;
 import com.xz.todolist.base.BaseActivity;
+import com.xz.todolist.entity.EditFunction;
+import com.xz.utils.appUtils.SpacesItemDecorationUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import jp.wasabeef.richeditor.RichEditor;
 
 public class AddActivity extends BaseActivity {
 
@@ -25,14 +34,12 @@ public class AddActivity extends BaseActivity {
 	ImageView icDone;
 	@BindView(R.id.et_short)
 	EditText etShort;
-	@BindView(R.id.ic_bold)
-	ImageView icBold;
-	@BindView(R.id.ic_italic)
-	ImageView icItalic;
-	@BindView(R.id.ic_underline)
-	ImageView icUnderline;
-	@BindView(R.id.ic_strickout)
-	ImageView icStrickout;
+	@BindView(R.id.rich_editor)
+	RichEditor richEditor;
+	@BindView(R.id.function_recycler)
+	RecyclerView functionRecycler;
+
+	EditFunctionAdapter adapter;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -48,15 +55,34 @@ public class AddActivity extends BaseActivity {
 	public void initData() {
 		changeStatusBarTextColor();
 		initView();
+		initFunctionRecycler();
 	}
+
 
 	private void initView() {
 
 	}
 
+	private void initFunctionRecycler() {
+		adapter = new EditFunctionAdapter(mContext);
+		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+		linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+		functionRecycler.setLayoutManager(linearLayoutManager);
+		functionRecycler.setAdapter(adapter);
+		functionRecycler.addItemDecoration(new SpacesItemDecorationUtil.SpacesItemDecorationHorizontal(6));
+		LinearSnapHelper snapHelper = new LinearSnapHelper();
+		snapHelper.attachToRecyclerView(functionRecycler);
 
-	@OnClick({R.id.ic_done, R.id.ic_back, R.id.ic_clock
-			, R.id.ic_bold, R.id.ic_italic, R.id.ic_underline, R.id.ic_strickout})
+		List<EditFunction> list = new ArrayList<>();
+		list.add(new EditFunction("加粗", R.mipmap.ic_font_bold));
+		list.add(new EditFunction("斜体", R.mipmap.ic_font_italic));
+		list.add(new EditFunction("下划线", R.mipmap.ic_font_underline));
+		list.add(new EditFunction("删除线", R.mipmap.ic_font_strickout));
+		adapter.refresh(list);
+	}
+
+
+	@OnClick({R.id.ic_done, R.id.ic_back, R.id.ic_clock})
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.ic_clock:
@@ -64,14 +90,6 @@ public class AddActivity extends BaseActivity {
 			case R.id.ic_back:
 			case R.id.ic_done:
 				saveOnExit();
-				break;
-			case R.id.ic_bold://加粗
-				break;
-			case R.id.ic_italic://斜体
-				break;
-			case R.id.ic_underline://下划线
-				break;
-			case R.id.ic_strickout://删除线
 				break;
 
 		}

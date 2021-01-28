@@ -60,8 +60,12 @@ dependencies {
     implementation 'com.ljx.rxhttp:converter-fastjson:2.2.0'
     // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation 'commons-io:commons-io:2.8.0'
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    //lombok插件
+    implementation 'javax.annotation:javax.annotation-api:1.2'
+    implementation 'org.projectlombok:lombok:1.16.6'
+    annotationProcessor 'org.projectlombok:lombok:1.16.6'
     //下拉刷新 github:https://github.com/lcodecorex/TwinklingRefreshLayout/blob/master/README_CN.md
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    //富文本编辑器  github:https://github.com/wasabeef/richeditor-android
+    implementation 'jp.wasabeef:richeditor-android:2.0.0'
 }

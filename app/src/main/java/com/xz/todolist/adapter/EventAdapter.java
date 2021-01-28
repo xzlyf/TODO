@@ -51,7 +51,7 @@ public class EventAdapter extends BaseRecyclerAdapter<Event> {
 	}
 
 
-	class ViewHolder extends BaseRecyclerViewHolder {
+	static class ViewHolder extends BaseRecyclerViewHolder {
 		@BindView(R.id.tv_title)
 		TextView tvTitle;
 		@BindView(R.id.remind_time)
