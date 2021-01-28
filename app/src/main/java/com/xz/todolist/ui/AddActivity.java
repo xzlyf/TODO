@@ -66,31 +66,59 @@ public class AddActivity extends BaseActivity {
 	}
 
 	private void initFunctionRecycler() {
+		// TODO: 2021/1/28 把RecyclerView改为tab方式
 		adapter = new EditFunctionAdapter(mContext);
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
 		linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
 		functionRecycler.setLayoutManager(linearLayoutManager);
 		functionRecycler.setAdapter(adapter);
-		functionRecycler.addItemDecoration(new SpacesItemDecorationUtil.SpacesItemDecorationHorizontal(6));
+		functionRecycler.addItemDecoration(new SpacesItemDecorationUtil.SpacesItemDecorationHorizontal(10));
 		LinearSnapHelper snapHelper = new LinearSnapHelper();
 		snapHelper.attachToRecyclerView(functionRecycler);
 		adapter.setOnItemClickListener(new OnItemClickListener<EditFunction>() {
 			@Override
 			public void onItemClick(View view, int position, EditFunction model) {
-				Logger.w(position+"=="+model.getFunctionName());
+				Logger.w(position + "==" + model.getFunctionName());
+				switch (position) {
+					case 0:
+						richEditor.undo();
+						break;
+					case 1:
+						richEditor.redo();
+						break;
+					case 2:
+						richEditor.setBold();
+						break;
+					case 3:
+						richEditor.setItalic();
+						break;
+					case 4:
+						richEditor.setUnderline();
+						break;
+					case 5:
+						richEditor.setStrikeThrough();
+						break;
+					case 6:
+						richEditor.setNumbers();
+						break;
+				}
 			}
 
 			@Override
 			public void onItemLongClick(View view, int position, EditFunction model) {
-				Logger.w(position+"==长按=="+model.getFunctionName());
+				Logger.w(position + "==长按==" + model.getFunctionName());
 			}
 		});
 
 		List<EditFunction> list = new ArrayList<>();
+		list.add(new EditFunction("撤回", R.mipmap.ic_undo));
+		list.add(new EditFunction("重做", R.mipmap.ic_redo));
 		list.add(new EditFunction("加粗", R.mipmap.ic_font_bold));
 		list.add(new EditFunction("斜体", R.mipmap.ic_font_italic));
 		list.add(new EditFunction("下划线", R.mipmap.ic_font_underline));
 		list.add(new EditFunction("删除线", R.mipmap.ic_font_strickout));
+		list.add(new EditFunction("列表", R.mipmap.ic_list));
+
 		adapter.refresh(list);
 	}
 
