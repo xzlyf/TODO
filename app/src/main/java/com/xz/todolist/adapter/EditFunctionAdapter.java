@@ -14,6 +14,8 @@ import com.xz.todolist.base.BaseRecyclerViewHolder;
 import com.xz.todolist.entity.EditFunction;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * @author czr
@@ -39,7 +41,7 @@ public class EditFunctionAdapter extends BaseRecyclerAdapter<EditFunction> {
 		return new ViewHolder(mInflater.inflate(R.layout.item_function, parent, false));
 	}
 
-	static class ViewHolder extends BaseRecyclerViewHolder {
+	class ViewHolder extends BaseRecyclerViewHolder {
 		@BindView(R.id.item_img)
 		ImageView itemImg;
 		@BindView(R.id.item_tips)
@@ -47,6 +49,22 @@ public class EditFunctionAdapter extends BaseRecyclerAdapter<EditFunction> {
 
 		ViewHolder(@NonNull View itemView) {
 			super(itemView);
+		}
+
+
+		@OnClick({R.id.item_img, R.id.item_tips})
+		void onViewClick(View view) {
+			if (mOnItemClickListener != null) {
+				mOnItemClickListener.onItemClick(view, getLayoutPosition(), mList.get(getLayoutPosition()));
+			}
+		}
+
+		@OnLongClick({R.id.item_img, R.id.item_tips})
+		boolean onViewLongClick(View view) {
+			if (mOnItemClickListener != null) {
+				mOnItemClickListener.onItemLongClick(view, getLayoutPosition(), mList.get(getLayoutPosition()));
+			}
+			return true;
 		}
 	}
 

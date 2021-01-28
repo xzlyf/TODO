@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.adapter.EditFunctionAdapter;
 import com.xz.todolist.base.BaseActivity;
+import com.xz.todolist.base.OnItemClickListener;
 import com.xz.todolist.entity.EditFunction;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 
@@ -72,6 +74,17 @@ public class AddActivity extends BaseActivity {
 		functionRecycler.addItemDecoration(new SpacesItemDecorationUtil.SpacesItemDecorationHorizontal(6));
 		LinearSnapHelper snapHelper = new LinearSnapHelper();
 		snapHelper.attachToRecyclerView(functionRecycler);
+		adapter.setOnItemClickListener(new OnItemClickListener<EditFunction>() {
+			@Override
+			public void onItemClick(View view, int position, EditFunction model) {
+				Logger.w(position+"=="+model.getFunctionName());
+			}
+
+			@Override
+			public void onItemLongClick(View view, int position, EditFunction model) {
+				Logger.w(position+"==长按=="+model.getFunctionName());
+			}
+		});
 
 		List<EditFunction> list = new ArrayList<>();
 		list.add(new EditFunction("加粗", R.mipmap.ic_font_bold));
