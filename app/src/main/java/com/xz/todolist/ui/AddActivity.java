@@ -67,6 +67,7 @@ public class AddActivity extends BaseActivity {
 
 	private void initFunctionRecycler() {
 		// TODO: 2021/1/28 把RecyclerView改为tab方式
+		// TODO: 2021/1/29  优化recyclerview 的点击事件
 		adapter = new EditFunctionAdapter(mContext);
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
 		linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
