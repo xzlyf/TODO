@@ -1,6 +1,7 @@
 package com.xz.todolist.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -57,6 +58,7 @@ public class EditFunctionAdapter extends BaseRecyclerAdapter<EditFunction> {
 			if (mOnItemClickListener != null) {
 				mOnItemClickListener.onItemClick(view, getLayoutPosition(), mList.get(getLayoutPosition()));
 			}
+			changeState();
 		}
 
 		@OnLongClick({R.id.item_img, R.id.item_tips})
@@ -65,6 +67,25 @@ public class EditFunctionAdapter extends BaseRecyclerAdapter<EditFunction> {
 				mOnItemClickListener.onItemLongClick(view, getLayoutPosition(), mList.get(getLayoutPosition()));
 			}
 			return true;
+		}
+
+		private int state = 0;//0 未点击  1 已点击
+
+		private void changeState() {
+			int nowPosition = getLayoutPosition();
+			if (nowPosition == 0 || nowPosition == 1) {
+				//跳过撤回和重做的按钮
+				return;
+			}
+			if (state == 0) {
+				state = 1;
+				itemImg.setColorFilter(mContext.getColor(R.color.yellow_5));
+				itemTips.setTextColor(mContext.getColor(R.color.yellow_5));
+			} else if (state == 1) {
+				state = 0;
+				itemImg.setColorFilter(mContext.getColor(R.color.black_7));
+				itemTips.setTextColor(mContext.getColor(R.color.black_7));
+			}
 		}
 	}
 
