@@ -265,7 +265,7 @@ public class MainActivity extends BaseActivity {
 	 * @param  isDone 完成或未完成的事件
 	 */
 	private void getEvent(boolean isDone, boolean isClean) {
-		todoApi.getEvent(Local.token, isDone, page, size, new NetUtil.ResultCallback<PagingResult<List<Event>>>() {
+		todoApi.getEvent(isDone, page, size, new NetUtil.ResultCallback<PagingResult<List<Event>>>() {
 			@Override
 			public void onError(Request request, Exception e) {
 				e.printStackTrace();

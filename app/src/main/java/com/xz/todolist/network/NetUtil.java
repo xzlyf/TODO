@@ -3,6 +3,8 @@ package com.xz.todolist.network;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -39,7 +41,9 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dispatcher;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -350,7 +354,7 @@ public class NetUtil {
 	 */
 	private Request buildGetCommonRequest(String url, Map<String, Object> params) {
 		return new Request.Builder()
-				.addHeader("Connection","close")
+				.addHeader("Connection", "close")
 				.url(attachHttpGetParams(url, params, true))
 				.build();
 	}
@@ -360,7 +364,7 @@ public class NetUtil {
 	 */
 	private Request buildGetRequest(long timestamp, String url, Map<String, Object> params) {
 		return new Request.Builder()
-				.addHeader("Connection","close")
+				.addHeader("Connection", "close")
 				.addHeader("appid", Local.appId)
 				.addHeader("timestamp", String.valueOf(timestamp))
 				.addHeader("version", Local.version)
@@ -416,5 +420,79 @@ public class NetUtil {
 		deliveryRequest(request, callback);
 	}
 
+	public void postJson(String url, String json, @Nullable Map<String, Object> params, ResultCallback callback) {
+		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+		RequestBody requestbody = RequestBody.create(JSON, json);
+		Request request = new Request.Builder()
+				.addHeader("appid", Local.appId)
+				.addHeader("timestamp", String.valueOf(System.currentTimeMillis()))
+				.addHeader("version", Local.version)
+				.addHeader("sign", SecretUtil.getSecret(System.currentTimeMillis()))
+				.url(attachHttpGetParams(url, params, true))
+				.post(requestbody)
+				.build();
+		deliveryRequest(request, callback);
+
+	}
+
+	/**
+	 * 根据Tag取消请求
+	 * TODO: 2021/1/30  根据tag取消请求 https://blog.csdn.net/buyaoshitududongwo/article/details/80048179
+	 */
+	public void cancelTag(Object tag) {
+		if (tag == null) return;
+		for (Call call : mOkHttpClient.dispatcher().queuedCalls()) {
+			if (tag.equals(call.request().tag())) {
+				call.cancel();
+			}
+		}
+		for (Call call : mOkHttpClient.dispatcher().runningCalls()) {
+			if (tag.equals(call.request().tag())) {
+				call.cancel();
+			}
+		}
+	}
+
+	/**
+	 * 根据Tag取消请求
+	 */
+	public static void cancelTag(OkHttpClient client, Object tag) {
+		if (client == null || tag == null) return;
+		for (Call call : client.dispatcher().queuedCalls()) {
+			if (tag.equals(call.request().tag())) {
+				call.cancel();
+			}
+		}
+		for (Call call : client.dispatcher().runningCalls()) {
+			if (tag.equals(call.request().tag())) {
+				call.cancel();
+			}
+		}
+	}
+
+	/**
+	 * 取消所有请求请求
+	 */
+	public void cancelAll() {
+		for (Call call : mOkHttpClient.dispatcher().queuedCalls()) {
+			call.cancel();
+		}
+		for (Call call : mOkHttpClient.dispatcher().runningCalls()) {
+			call.cancel();
+		}
+	}
+
+	/**
+	 * 取消所有请求请求
+	 */
+	public static void cancelAll(OkHttpClient client) {
+		if (client == null) return;
+		for (Call call : client.dispatcher().queuedCalls()) {
+			call.cancel();
+		}
+		for (Call call : client.dispatcher().runningCalls()) {
+			call.cancel();
+		}
+	}
 
 }

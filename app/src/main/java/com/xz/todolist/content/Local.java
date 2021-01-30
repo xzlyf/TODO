@@ -31,10 +31,8 @@ public class Local {
 	public static String BASE_URL_INFO = Local.SERVER + Local.alt_appinfo;
 
 	//接口
-	public static final String GET_USER_RULE = "/getUserRules";//获取隐私协议
-	public static final String GET_REGISTER = "/registerUser";//注册
-	public static final String GET_LOGIN = "/login";//登录
 	public static final String GET_EVENT = "/getDoneEvent";//获取事件
+	public static final String POST_CREATE_EVENT = "/createEvent";//创建事件
 
 	public static String appId = "4MakRN8juW8c6Hii4lTl0rt84JDH22c9";
 	public static String appSecret = "OoLZs7vHPEPsr9YtZtnLY7My2W2RiwTk";

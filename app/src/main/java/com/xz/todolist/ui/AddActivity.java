@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.adapter.EditFunctionAdapter;
+import com.xz.todolist.api.TodoApi;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.base.OnItemClickListener;
+import com.xz.todolist.entity.CreateEvent;
 import com.xz.todolist.entity.EditFunction;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,6 +45,7 @@ public class AddActivity extends BaseActivity {
 	RecyclerView functionRecycler;
 
 	EditFunctionAdapter adapter;
+	TodoApi todoApi;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -56,6 +60,7 @@ public class AddActivity extends BaseActivity {
 	@Override
 	public void initData() {
 		changeStatusBarTextColor();
+		todoApi = TodoApi.getInstance();
 		initView();
 		initFunctionRecycler();
 	}
@@ -142,7 +147,13 @@ public class AddActivity extends BaseActivity {
 	 * 退出自动保存
 	 */
 	private void saveOnExit() {
-
+		// TODO: 2021/1/30 保存是走本地还是远程
+		CreateEvent event = new CreateEvent();
+		event.setShortTitle("测试标题20210130");
+		event.setContent("测试内容20210130");
+		event.setDone(false);
+		event.setRemindTime(new Date(System.currentTimeMillis()));
+		todoApi.createEvent(event);
 		finish();
 
 	}
