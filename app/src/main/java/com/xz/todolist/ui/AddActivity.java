@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codbking.widget.DatePickDialog;
+import com.codbking.widget.bean.DateType;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.adapter.EditFunctionAdapter;
@@ -133,6 +135,20 @@ public class AddActivity extends BaseActivity {
 	public void onViewClick(View view) {
 		switch (view.getId()) {
 			case R.id.ic_clock:
+				DatePickDialog dialog = new DatePickDialog(this);
+				//设置上下年分限制
+				dialog.setYearLimt(5);
+				//设置标题
+				dialog.setTitle("选择时间");
+				//设置类型
+				dialog.setType(DateType.TYPE_ALL);
+				//设置消息体的显示格式，日期格式
+				dialog.setMessageFormat("yyyy-MM-dd HH:mm");
+				//设置选择回调
+				dialog.setOnChangeLisener(null);
+				//设置点击确定按钮回调
+				dialog.setOnSureLisener(null);
+				dialog.show();
 				break;
 			case R.id.ic_back:
 			case R.id.ic_done:
