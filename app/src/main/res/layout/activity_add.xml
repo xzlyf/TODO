@@ -74,6 +74,43 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
+            <!--提醒时间-->
+            <LinearLayout
+                android:id="@+id/remind_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/share_round_clock"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="4dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="2dp">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@mipmap/ic_clock" />
+
+                <TextView
+                    android:id="@+id/remind_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="2021年1月1日 18:20" />
+
+
+                <ImageView
+                    android:padding="1dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="5dp"
+                    android:src="@mipmap/ic_close"
+                    android:tint="@color/gray_6" />
+            </LinearLayout>
 
             <!--文本编辑区-->
             <jp.wasabeef.richeditor.RichEditor

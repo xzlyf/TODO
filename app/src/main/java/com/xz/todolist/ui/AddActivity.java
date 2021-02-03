@@ -1,5 +1,6 @@
 package com.xz.todolist.ui;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codbking.widget.DatePickDialog;
+import com.codbking.widget.OnSureLisener;
 import com.codbking.widget.bean.DateType;
 import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
@@ -46,8 +48,9 @@ public class AddActivity extends BaseActivity {
 	@BindView(R.id.function_recycler)
 	RecyclerView functionRecycler;
 
-	EditFunctionAdapter adapter;
-	TodoApi todoApi;
+	private EditFunctionAdapter adapter;
+	private TodoApi todoApi;
+	private long remindDate = -1;
 
 	@Override
 	public boolean homeAsUpEnabled() {
@@ -137,9 +140,9 @@ public class AddActivity extends BaseActivity {
 			case R.id.ic_clock:
 				DatePickDialog dialog = new DatePickDialog(this);
 				//设置上下年分限制
-				dialog.setYearLimt(5);
+				dialog.setYearLimt(10);
 				//设置标题
-				dialog.setTitle("选择时间");
+				dialog.setTitle("提醒时间");
 				//设置类型
 				dialog.setType(DateType.TYPE_ALL);
 				//设置消息体的显示格式，日期格式
@@ -147,7 +150,12 @@ public class AddActivity extends BaseActivity {
 				//设置选择回调
 				dialog.setOnChangeLisener(null);
 				//设置点击确定按钮回调
-				dialog.setOnSureLisener(null);
+				dialog.setOnSureLisener(new OnSureLisener() {
+					@Override
+					public void onSure(Date date) {
+						remindDate = date.getTime();
+					}
+				});
 				dialog.show();
 				break;
 			case R.id.ic_back:
@@ -164,12 +172,12 @@ public class AddActivity extends BaseActivity {
 	 */
 	private void saveOnExit() {
 		// TODO: 2021/1/30 保存是走本地还是远程
-		CreateEvent event = new CreateEvent();
+		/*CreateEvent event = new CreateEvent();
 		event.setShortTitle("测试标题20210130");
 		event.setContent("测试内容20210130");
 		event.setDone(false);
 		event.setRemindTime(new Date(System.currentTimeMillis()));
-		todoApi.createEvent(event);
+		todoApi.createEvent(event);*/
 		finish();
 
 	}
