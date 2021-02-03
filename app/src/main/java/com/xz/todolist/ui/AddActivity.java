@@ -1,10 +1,11 @@
 package com.xz.todolist.ui;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -19,9 +20,9 @@ import com.xz.todolist.adapter.EditFunctionAdapter;
 import com.xz.todolist.api.TodoApi;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.base.OnItemClickListener;
-import com.xz.todolist.entity.CreateEvent;
 import com.xz.todolist.entity.EditFunction;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
+import com.xz.utils.appUtils.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +48,12 @@ public class AddActivity extends BaseActivity {
 	RichEditor richEditor;
 	@BindView(R.id.function_recycler)
 	RecyclerView functionRecycler;
+	@BindView(R.id.remind_time)
+	TextView remindTime;
+	@BindView(R.id.clock_close)
+	ImageView clockClose;
+	@BindView(R.id.remind_view)
+	LinearLayout remindView;
 
 	private EditFunctionAdapter adapter;
 	private TodoApi todoApi;
@@ -72,7 +79,7 @@ public class AddActivity extends BaseActivity {
 
 
 	private void initView() {
-
+		remindView.setVisibility(View.GONE);
 	}
 
 	private void initFunctionRecycler() {
@@ -134,9 +141,10 @@ public class AddActivity extends BaseActivity {
 	}
 
 
-	@OnClick({R.id.ic_done, R.id.ic_back, R.id.ic_clock})
+	@OnClick({R.id.ic_done, R.id.ic_back, R.id.ic_clock, R.id.clock_close, R.id.remind_view})
 	public void onViewClick(View view) {
 		switch (view.getId()) {
+			case R.id.remind_view:
 			case R.id.ic_clock:
 				DatePickDialog dialog = new DatePickDialog(this);
 				//设置上下年分限制
@@ -154,6 +162,8 @@ public class AddActivity extends BaseActivity {
 					@Override
 					public void onSure(Date date) {
 						remindDate = date.getTime();
+						remindView.setVisibility(View.VISIBLE);
+						remindTime.setText(TimeUtil.getSimMilliDate("yyyy年MM月dd日 HH:mm", remindDate));
 					}
 				});
 				dialog.show();
@@ -161,6 +171,11 @@ public class AddActivity extends BaseActivity {
 			case R.id.ic_back:
 			case R.id.ic_done:
 				saveOnExit();
+				break;
+			case R.id.clock_close:
+				remindDate = -1;
+				remindTime.setText("xxx");
+				remindView.setVisibility(View.GONE);
 				break;
 
 		}
@@ -182,10 +197,4 @@ public class AddActivity extends BaseActivity {
 
 	}
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// TODO: add setContentView(...) invocation
-		ButterKnife.bind(this);
-	}
 }
