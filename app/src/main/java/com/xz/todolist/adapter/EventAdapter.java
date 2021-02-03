@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.TimeUtils;
 
+import com.orhanobut.logger.Logger;
 import com.xz.todolist.R;
 import com.xz.todolist.base.BaseRecyclerAdapter;
 import com.xz.todolist.base.BaseRecyclerViewHolder;
@@ -40,6 +41,7 @@ public class EventAdapter extends BaseRecyclerAdapter<Event> {
 		if (entity.getRemindTime() == null) {
 			viewHolder.remindView.setVisibility(View.GONE);
 		} else {
+			viewHolder.remindView.setVisibility(View.VISIBLE);
 			viewHolder.remindTime.setText(TimeUtil.getSimMilliDate(DateFormat.STANDARD_DEC, entity.getRemindTime().getTime()));
 		}
 

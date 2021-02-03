@@ -20,6 +20,7 @@ import com.xz.todolist.adapter.EditFunctionAdapter;
 import com.xz.todolist.api.TodoApi;
 import com.xz.todolist.base.BaseActivity;
 import com.xz.todolist.base.OnItemClickListener;
+import com.xz.todolist.entity.CreateEvent;
 import com.xz.todolist.entity.EditFunction;
 import com.xz.utils.appUtils.SpacesItemDecorationUtil;
 import com.xz.utils.appUtils.TimeUtil;
@@ -181,18 +182,33 @@ public class AddActivity extends BaseActivity {
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		saveOnExit();
+	}
 
 	/**
 	 * 退出自动保存
 	 */
 	private void saveOnExit() {
-		// TODO: 2021/1/30 保存是走本地还是远程
-		/*CreateEvent event = new CreateEvent();
-		event.setShortTitle("测试标题20210130");
-		event.setContent("测试内容20210130");
+		String shortSt = etShort.getText().toString();
+		String contentSt = richEditor.getHtml();
+		if (shortSt.equals("") && contentSt == null) {
+			finish();
+			return;
+		}
+		if (shortSt.equals("")) {
+			shortSt = contentSt.substring(0, 12);
+		}
+		CreateEvent event = new CreateEvent();
+		event.setShortTitle(shortSt);
+		event.setContent(contentSt);
 		event.setDone(false);
-		event.setRemindTime(new Date(System.currentTimeMillis()));
-		todoApi.createEvent(event);*/
+		if (remindDate != -1) {
+			event.setRemindTime(new Date(remindDate));
+		}
+		todoApi.createEvent(event);
+		sToast("已保存");
 		finish();
 
 	}
