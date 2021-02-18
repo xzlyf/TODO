@@ -63,6 +63,7 @@ public class EventAdapter extends BaseRecyclerAdapter<Event> {
 		@BindView(R.id.tv_content)
 		TextView tvContent;
 
+		// TODO: 2021/2/3 item 滑动删除
 		ViewHolder(@NonNull View itemView) {
 			super(itemView);
 		}
